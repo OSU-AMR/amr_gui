@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(riptide_rviz)
+project(amrviz)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -24,6 +24,7 @@ find_package(std_srvs REQUIRED)
 find_package(chameleon_tf_msgs REQUIRED)
 find_package(interactive_markers REQUIRED)
 find_package(riptide_meshes REQUIRED)
+find_package(amr_meshes REQUIRED)
 
 find_package(zed_interfaces QUIET) #not required because we will handle it if we cant find this. Its only installed on certain computers
 

@@ -107,7 +107,7 @@ class MarkerPublisher(Node):
         #controller command subs
         if CONTROLLER_TYPE == ControllerType.CONTROLLER_CMD:
             self.linearSub = self.create_subscription(ControllerCommand, LINEAR_CMD_TOPIC, self.linearCB, 10)
-            self.angularSub = self.create_subscription(ControllerCommand, ANGULAR_CMD_TOPIC, self.angularCB, 10)
+            self.angularlayout.configSub = self.create_subscription(ControllerCommand, ANGULAR_CMD_TOPIC, self.angularCB, 10)
             self.latestLinearCmd = ControllerCommand()
             self.latestAngularCmd = ControllerCommand()
         elif CONTROLLER_TYPE == ControllerType.TARGET_POSITION:
