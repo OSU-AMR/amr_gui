@@ -20,16 +20,23 @@ from transforms3d.euler import euler2quat
 from transforms3d.quaternions import qmult
 from visualization_msgs.msg import Marker, MarkerArray
 import yaml
+from ros2node.api import get_node_names
+
 
 class GridPublisher(Node):
     def __init__(self):
         super().__init__("gridpublisher")
 
-        self.marker_pub = self.create_publisher(MarkerArray, "layout_array", rclpy.qos.qos_profile_system_default)
-
-        self.tf_static_broadcaster = StaticTransformBroadcaster(self)        
-
+        #publishers
+        self.layout_pub = self.create_publisher(MarkerArray, "layout_array", rclpy.qos.qos_profile_system_default)
+        self.robot_pub = self.create_publisher(MarkerArray, "robot_array", rclpy.qos.qos_profile_system_default)
+        
+        #timers
         self.marker_pub_cb_timer = self.create_timer(1.0, self.MarkerPublishCallback)
+        self.robot_pub_timer = self.create_timer(1.0, self.updateRobotStatus)
+
+        #tf
+        self.tf_static_broadcaster = StaticTransformBroadcaster(self)        
 
         self.BroadcastGridFrame()   
 
@@ -37,10 +44,21 @@ class GridPublisher(Node):
         self.amrviz_pkg = "amrviz"
         self.mesh_folder = "meshes_amr"
 
+
+        #load in yaml
         try:
             self.config_file = yaml.safe_load(open(os.path.join(get_package_share_directory(self.amrviz_pkg), "config", "layout_config.yaml")))
         except yaml.YAMLError as e:
             self.get_logger().info(e)
+
+        #create robot dict
+        self.robot_status = dict()
+
+        names = self.config_file["top"]["robots"].keys()
+        for name in names:
+            self.robot_status[name] = 0
+        
+
 
     def BroadcastGridFrame(self):
 
@@ -128,14 +146,111 @@ class GridPublisher(Node):
         msg = MarkerArray()
         msg.markers = markers
 
-        self.marker_pub.publish(msg)
+        self.layout_pub.publish(msg)
 
         #cancel timer so it only does this once
         self.marker_pub_cb_timer.cancel()
 
         print("Published the msg")
 
-    def
+    def updateRobotStatus(self):
+        current_time = self.get_clock().now().nanoseconds
+
+
+        #check for heartbeat topics
+        for node_name in get_node_names(node=self):
+
+            print(str(node_name))
+            try:
+                for topic in self.get_publisher_names_and_types_by_node(node_name.name, ""):
+
+                    #if the topic is a heartbeat topic and is a valid robot
+                    if "heartbeat" in topic[1] and node_name in self.robot_status.keys():
+
+                        #reset the robot timer
+                        self.robot_status[node_name] = current_time
+            except:
+                pass
+        
+        markers = []
+
+        robots = self.config_file["top"]["robots"]
+
+        
+
+        for robot_key in robots.keys():
+            #the yaml tile object
+            robot = robots[robot_key]
+
+            #fill out marker header
+            marker = Marker()
+            marker.header.frame_id = robot["frame"]
+            marker.header.stamp = rclpy.time.Time().to_msg()
+            marker.ns = robot_key
+            marker.id = 3
+            marker.type = 10
+            marker.action = 0
+            marker.frame_locked = True
+
+            #fill out pose fto_msg(self)or marker
+            pose = Pose()
+            pose.position.x = robot["pose"][0]
+            pose.position.y = robot["pose"][1]
+            pose.position.z = robot["pose"][2]
+
+            #get rotation in the form of quaternion
+            orientation = euler2quat(robot["pose"][3], robot["pose"][4], robot["pose"][5])
+
+            pose.orientation.x = orientation[1]
+            pose.orientation.y = orientation[2]
+            pose.orientation.z = orientation[3]
+            pose.orientation.w = orientation[0]
+
+            #fill out scale for marker
+            scale = Vector3()
+            scale.x = robot["scale"][0]
+            scale.y = robot["scale"][1]
+            scale.z = robot["scale"][2]
+
+            #color
+            color = ColorRGBA()
+            color.r = robot["color"][0]
+            color.b = robot["color"][1]
+            color.g = robot["color"][2]
+
+            if (current_time - self.robot_status[robot_key]) > 5e9:
+                color.a = robot["color"][3]
+            else:
+                color.a = 0
+
+            #duration
+            duration = Duration().to_msg()
+            duration.nanosec = 0
+            duration.sec = 0
+
+            marker.pose = pose
+            marker.scale = scale
+            marker.color = color
+            marker.lifetime = duration
+
+            #set mesh resource
+            marker.mesh_resource = "file://" + os.path.join(get_package_share_directory(self.mesh_pkg), self.mesh_folder, robot["mesh"], "model.dae")
+            marker.mesh_use_embedded_materials = False
+
+            markers.append(marker)
+ 
+        msg = MarkerArray()
+        msg.markers = markers
+
+        self.robot_pub.publish(msg)
+
+        #cancel timer so it only does this once
+        self.marker_pub_cb_timer.cancel()
+
+        print("Published the msg")
+
+            
+
         
 
 def main(args = None):

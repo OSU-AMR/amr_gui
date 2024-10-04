@@ -21,4 +21,54 @@ top:
       color: [1.0, 1.0, 0.8, 1.0]
       pose: [0.3038, .3038, 0.0, 0.0, 0.0, 0.0]
       scale: [0.5, 0.5, 0.5]
+  robots:
+    robot0:
+      frame: "robot0_base"
+      mesh: "talos"
+      color: [1.0, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      scale: [0.5, 0.5, 0.5]
+    robot1:
+      frame: "robot1_base"
+      mesh: "talos"
+      color: [1.0, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      scale: [0.5, 0.5, 0.5]
+    robot2:
+      frame: "robot3_base"
+      mesh: "talos"
+      color: [1.0, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      scale: [0.5, 0.5, 0.5]
+    robot3:
+      frame: "robot4_base"
+      mesh: "talos"
+      color: [1.0, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      scale: [0.5, 0.5, 0.5]
+    robot4:
+      frame: "robot5_base"
+      mesh: "talos"
+      color: [1.0, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      scale: [0.5, 0.5, 0.5]
+    robot5:
+      frame: "robot6_base"
+      mesh: "talos"
+      color: [1.0, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      scale: [0.5, 0.5, 0.5]
+    robot6:
+      frame: "robot1_base"
+      mesh: "talos"
+      color: [1.0, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      scale: [0.5, 0.5, 0.5]
+    robotdummy:
+      frame: "robotdummy_base"
+      mesh: "talos"
+      color: [1.0, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 3.1415, 0.0]
+      scale: [0.5, 0.5, 0.5]
+
 
