@@ -51,10 +51,10 @@ class DummyRobotSpoofer(Node):
         t.transform.translation.z = self.pose[2]
 
         q = euler2quat(self.pose[3], self.pose[4], self.pose[5])
-        t.transform.rotation.x = q[0]
-        t.transform.rotation.y = q[1]
-        t.transform.rotation.z = q[2]
-        t.transform.rotation.w = q[3]
+        t.transform.rotation.x = q[1]
+        t.transform.rotation.y = q[2]
+        t.transform.rotation.z = q[3]
+        t.transform.rotation.w = q[0]
 
         self.tf_broadcaster.sendTransform(t)
 
