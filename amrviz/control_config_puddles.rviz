@@ -41,7 +41,7 @@ Panels:
     tgt_in_place_depth: -0.75
   - Class: riptide_rviz/Bringup
     Name: Bringup
-  - Class: riptide_rviz/Actuators
+  - Class: amrviz/Actuators
     Name: Actuators
     robot_namespace: /puddles
   - Class: rviz_common/Transformation
@@ -366,7 +366,7 @@ Visualization Manager:
           Value: true
       Enabled: true
       Name: wrenches
-    - Class: riptide_rviz/DiagnosticOverlay
+    - Class: amrviz/DiagnosticOverlayAmr
       Enabled: true
       Name: DiagnosticOverlay
       Value: true

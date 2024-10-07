@@ -9,15 +9,9 @@ import os
 
 robot = 'puddles'
 
-config = PathJoinSubstitution([
-        get_package_share_directory('riptide_descriptions2'),
-        'config',
-        LC("robot_yaml")
-    ])
+rviz_pkg_dir = get_package_share_directory('amrviz')
 
-rviz_pkg_dir = get_package_share_directory('riptide_rviz')
-
-riptide_rviz_src = os.path.join(rviz_pkg_dir[: rviz_pkg_dir.find("install") - 1], "src", "riptide_gui", "riptide_rviz")
+rviz_src = os.path.join(rviz_pkg_dir[: rviz_pkg_dir.find("install") - 1], "src", "amrviz", "amrviz")
 
 def generate_launch_description():
     return LaunchDescription([
@@ -47,7 +41,7 @@ def generate_launch_description():
                     arguments=[
                         "-d", 
                         PathJoinSubstitution([
-                            riptide_rviz_src,
+                            rviz_src,
                             LC("control_config_file")
                         ])
                     ],
@@ -56,26 +50,13 @@ def generate_launch_description():
 
                 # send the rest into the robot namespace
                 PushRosNamespace(["/", LC('robot')]),
-
-                # start the thruster wrench visualizer
-                Node(
-                    package="riptide_controllers2",
-                    executable="thruster_wrench_publisher.py",
-                    name="thruster_wrench_publisher",
-                    output="screen",
-                    parameters=[
-                        {"vehicle_config": config},
-                        {"robot": LC("robot")},
-                    ]
-                ),
                 
                 Node(
-                    package="riptide_rviz",
-                    executable="MarkerPublisher.py",
-                    name="marker_publisher",
+                    package="amrviz",
+                    executable="PosePublisher.py",
+                    name="gridpublisher",
                     output="screen",
                     parameters = [
-                        os.path.join(get_package_share_directory("riptide_rviz"), "config", "markers.yaml")
                     ]
                 )
             ]

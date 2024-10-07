@@ -1,4 +1,4 @@
-<library path="riptide_rviz">
+<library path="amrviz">
     <class name="riptide_rviz/ControlPanel" type="riptide_rviz::ControlPanel" base_class_type="rviz_common::Panel">
         <description>
             RVIZ plugin for controlling the AUV Underwater
@@ -24,17 +24,22 @@
             RVIZ plugin for starting up the riptide software package on remote targets
         </description>
     </class>
-    <class name="riptide_rviz/BaggingPanel" type="riptide_rviz::BaggingPanel" base_class_type="rviz_common::Panel">
+    <class name="amrviz/BaggingPanel" type="riptide_rviz::BaggingPanel" base_class_type="rviz_common::Panel">
         <description>
             RVIZ plugin for configuring bagging on remote targets
         </description>
     </class>
-    <class name="riptide_rviz/Actuators" type="riptide_rviz::Actuators" base_class_type="rviz_common::Panel">
+    <class name="amrviz/Actuators" type="riptide_rviz::Actuators" base_class_type="rviz_common::Panel">
         <description>
             RVIZ plugin for controlling the actuators on a riptide vehicle
         </description>
     </class>
     <class name="riptide_rviz/DiagnosticOverlay" type="riptide_rviz::DiagnosticOverlay" base_class_type="rviz_common::Display">
+        <description>
+            RVIZ Plugin for rendering riptide vehicle diagnostics on the RVIZ display
+        </description>
+    </class>
+    <class name="amrviz/DiagnosticOverlayAmr" type="amrviz::DiagnosticOverlayAmr" base_class_type="rviz_common::Display">
         <description>
             RVIZ Plugin for rendering riptide vehicle diagnostics on the RVIZ display
         </description>

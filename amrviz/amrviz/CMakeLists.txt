@@ -49,6 +49,7 @@ file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 # pick up headers to moc
 file(GLOB MOC_HEADERS ${PROJECT_SOURCE_DIR}/include/riptide_rviz/*.hpp)
+file(GLOB MOC_HEADERS2 ${PROJECT_SOURCE_DIR}/include/amrviz/*.hpp)
 
 file(GLOB UIS ${PROJECT_SOURCE_DIR}/src/*.ui)
 
@@ -56,6 +57,11 @@ file(GLOB UIS ${PROJECT_SOURCE_DIR}/src/*.ui)
 foreach(header "${MOC_HEADERS}")
   qt5_wrap_cpp(MOC_FILES "${header}") # this should spit out the moc files for each header
 endforeach()
+
+foreach(header "${MOC_HEADERS2}")
+  qt5_wrap_cpp(MOC_FILES "${header}") # this should spit out the moc files for each header
+endforeach()
+
 
 QT5_WRAP_UI( UI_HEADERS ${UIS} )
 
