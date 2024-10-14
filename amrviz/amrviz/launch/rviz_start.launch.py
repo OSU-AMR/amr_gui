@@ -7,11 +7,11 @@ from ament_index_python.packages import get_package_share_directory
 
 import os
 
-robot = 'puddles'
+robot = 'central'
 
 rviz_pkg_dir = get_package_share_directory('amrviz')
 
-rviz_src = os.path.join(rviz_pkg_dir[: rviz_pkg_dir.find("install") - 1], "src", "amrviz", "amrviz")
+rviz_src = os.path.join(rviz_pkg_dir[: rviz_pkg_dir.find("install") - 1], "src", "amr_gui", "amrviz", "amrviz")
 
 def generate_launch_description():
     return LaunchDescription([

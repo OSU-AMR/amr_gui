@@ -6,6 +6,8 @@
 #include <rviz_common/display_context.hpp>
 #include <rviz_common/logging.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 using namespace std::placeholders;
 using namespace std::chrono_literals;
 
@@ -63,6 +65,9 @@ namespace amrviz
 
         // watchdog timers for handling timeouts
         checkTimer = node->create_wall_timer(0.25s, std::bind(&DiagnosticOverlayAmr::checkTimeout, this));
+
+        //timer for checking for available robots
+        availableRobotRefreshTimer = node->create_wall_timer(1s, std::bind(&DiagnosticOverlayAmr::refreshAvailableRobots, this));
 
         // add all of the variable design items
         voltageConfig.text_color_ = QColor(255, 0, 255, 255);
@@ -334,6 +339,55 @@ namespace amrviz
             leakLedConfig.inner_color_ = QColor(255, 0, 255, 255);
             updateCircle(leakLedConfigId, leakLedConfig);
         }
+    }
+
+    void DiagnosticOverlayAmr::refreshAvailableRobots(){
+
+        // get ros node
+        auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
+
+        //get topic map
+        std::map<std::string, std::vector<std::string>> topics = node->get_topic_names_and_types();
+        
+        //look for new robots in topic map
+        std::map<std::string, std::vector<std::string>>::iterator itr;
+        for(itr = topics.begin(); itr != topics.end(); itr++){
+
+            //if the topic is a heartbeat
+            if(itr->second.size() > 0){
+                if(!itr->second.front().compare("amr_msgs/msg/Heartbeat")){
+
+                    std::vector<std::string> parts;
+                    boost::split(parts, itr->first, boost::is_any_of("/"));
+
+                    //check to see if the robot has alread been detected
+                    bool detected = false;
+                    std::map<std::string, double>::iterator inner_itr;
+                    for(inner_itr = detected_robots.begin(); inner_itr != detected_robots.end(); inner_itr++){
+                        if(!inner_itr->first.compare(parts.at(1))){
+                            detected = true;
+                        }
+                    }
+
+                    //if not in list add 
+                    if(!detected){
+                        //current time
+                        double current_time = node->get_clock()->now().seconds();
+
+                        //add check for size...
+                        detected_robots.insert(std::pair<std::string, double>(parts.at(1), current_time));
+
+                        diag_subs.push_back(node->create_subscription<amr_msgs::msg::Heartbeat>(itr->first, rclcpp::SystemDefaultsQoS(), std::bind(&DiagnosticOverlayAmr::RobotHeartbeatCallback, this, _1)));
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    void DiagnosticOverlayAmr::RobotHeartbeatCallback(const amr_msgs::msg::Heartbeat & msg){
+        RVIZ_COMMON_LOG_WARNING("Callback");
     }
 
     void DiagnosticOverlayAmr::reset(){

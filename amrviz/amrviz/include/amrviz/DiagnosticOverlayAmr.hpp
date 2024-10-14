@@ -8,6 +8,7 @@
 #include <std_msgs/msg/bool.hpp>
 #include <sensor_msgs/msg/temperature.hpp>
 #include <std_msgs/msg/bool.hpp>
+#include <amr_msgs/msg/heartbeat.hpp>
 
 #include <rviz_common/properties/string_property.hpp>
 #include <rviz_common/properties/float_property.hpp>
@@ -35,8 +36,11 @@ namespace amrviz
         void killCallback(const std_msgs::msg::Bool & msg);
         void zedCallback(const sensor_msgs::msg::Temperature& msg);
         void leakCallback(const std_msgs::msg::Bool& msg);
+        void RobotHeartbeatCallback(const amr_msgs::msg::Heartbeat & msg);
+
 
         void checkTimeout();
+        void refreshAvailableRobots();
 
         protected Q_SLOTS:
         void updateFont();
@@ -47,17 +51,24 @@ namespace amrviz
         // timer for determining timeouts
         rclcpp::TimerBase::SharedPtr checkTimer;
 
+        //timer for checking for available robots
+        rclcpp::TimerBase::SharedPtr  availableRobotRefreshTimer;
+
+        std::map<std::string, double> detected_robots;
+
         // times for stamping
         rclcpp::Time lastDiag, lastKill, lastZed, lastLeak;
         bool diagsTimedOut, killTimedOut, zedTimedOut, leakTimedOut;
         bool startedLeaking = false;
-
 
         // subscription for diagnostics
         rclcpp::Subscription<diagnostic_msgs::msg::DiagnosticArray>::SharedPtr diagSub;
         rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr killSub;
         rclcpp::Subscription<sensor_msgs::msg::Temperature>::SharedPtr zedSub;
         rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr leakSub;
+
+        //subscription arrary for robots
+        std::vector<rclcpp::Subscription<amr_msgs::msg::Heartbeat>::SharedPtr> diag_subs;
 
         // ids for rendering items so that we can edit them
         int voltageTextId = -1;
@@ -104,6 +115,8 @@ namespace amrviz
 
         std::vector<int> indicatorIds;
         std::vector<riptide_rviz::PaintedCircleConfig> robotIndicatorConfig;
+
+        
 
     };
 } // namespace riptide_rviz

@@ -25,6 +25,7 @@ find_package(chameleon_tf_msgs REQUIRED)
 find_package(interactive_markers REQUIRED)
 find_package(riptide_meshes REQUIRED)
 find_package(amr_meshes REQUIRED)
+find_package(amr_msgs REQUIRED)
 
 find_package(zed_interfaces QUIET) #not required because we will handle it if we cant find this. Its only installed on certain computers
 
@@ -111,6 +112,7 @@ set(deps
   chameleon_tf_msgs
   interactive_markers
   riptide_meshes
+  amr_msgs
 )
 
 if(zed_interfaces_FOUND)
