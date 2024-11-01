@@ -11,6 +11,8 @@
 using namespace std::placeholders;
 using namespace std::chrono_literals;
 
+#define ROBOT_HEARTBEAT_REFRESH_TIME 10
+
 namespace amrviz
 {
     DiagnosticOverlayAmr::DiagnosticOverlayAmr(){
@@ -67,7 +69,10 @@ namespace amrviz
         checkTimer = node->create_wall_timer(0.25s, std::bind(&DiagnosticOverlayAmr::checkTimeout, this));
 
         //timer for checking for available robots
-        availableRobotRefreshTimer = node->create_wall_timer(1s, std::bind(&DiagnosticOverlayAmr::refreshAvailableRobots, this));
+        availableRobotRefreshTimer = node->create_wall_timer(5s, std::bind(&DiagnosticOverlayAmr::refreshAvailableRobots, this));
+
+        //timer for refreshing robot statuses
+        detectedRobotsStatusTimer = node->create_wall_timer(1s, std::bind(&DiagnosticOverlayAmr::RobotStatusCheckCallback, this));
 
         // add all of the variable design items
         voltageConfig.text_color_ = QColor(255, 0, 255, 255);
@@ -80,10 +85,20 @@ namespace amrviz
         killLedConfigId = addCircle(killLedConfig);
 
         zedLedConfig.inner_color_ = QColor(255, 0, 255, 255);
-        zedLedConfigId = addCircle(zedLedConfig);
+        //zedLedConfigId = addCircle(zedLedConfig);
 
         leakLedConfig.inner_color_ = QColor(255, 0, 255, 255);
         leakLedConfigId = addCircle(leakLedConfig);
+
+        riptide_rviz::PaintedCircleConfig circle_pair_config = {
+                            200, 200, 0, 0, 7, 9,
+                            QColor(255, 0, 255, 255),
+                            QColor(0, 0, 0, 255)
+                        };
+        
+        int id = addCircle(zedLedConfig);
+
+        updateCircle(id, zedLedConfig);
 
         // add the static design items
         riptide_rviz::PaintedTextConfig diagLedLabel = {
@@ -362,7 +377,7 @@ namespace amrviz
 
                     //check to see if the robot has alread been detected
                     bool detected = false;
-                    std::map<std::string, double>::iterator inner_itr;
+                    std::map<std::string, std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>>::iterator inner_itr;
                     for(inner_itr = detected_robots.begin(); inner_itr != detected_robots.end(); inner_itr++){
                         if(!inner_itr->first.compare(parts.at(1))){
                             detected = true;
@@ -375,19 +390,54 @@ namespace amrviz
                         double current_time = node->get_clock()->now().seconds();
 
                         //add check for size...
-                        detected_robots.insert(std::pair<std::string, double>(parts.at(1), current_time));
+                        
+                        //create display config
+                        riptide_rviz::PaintedCircleConfig circle_pair_config = {
+                            200, 200, 0, 0, 7, 9,
+                            QColor(255, 0, 255, 255),
+                            QColor(0, 0, 0, 255)
+                        };
 
+                        std::pair<int, riptide_rviz::PaintedCircleConfig> circlepair = std::pair<int, riptide_rviz::PaintedCircleConfig>(addCircle(circle_pair_config), circle_pair_config);
+                        
+                        //add to list to check in the future
+                        std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>> value_pair = std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>(current_time, circlepair);
+                        detected_robots.insert(std::pair<std::string, std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>>(parts.at(1), value_pair));
+
+                        //create callback
                         diag_subs.push_back(node->create_subscription<amr_msgs::msg::Heartbeat>(itr->first, rclcpp::SystemDefaultsQoS(), std::bind(&DiagnosticOverlayAmr::RobotHeartbeatCallback, this, _1)));
                     }
 
                 }
             }
         }
+    }
 
+    void DiagnosticOverlayAmr::RobotStatusCheckCallback(){
+        // get ros node
+        auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
+
+        std::map<std::string, std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>>::iterator it;
+
+        double current_time = node->get_clock()->now().seconds();
+
+        for(it = detected_robots.begin(); it != detected_robots.end(); it++){
+            if(it->second.first + ROBOT_HEARTBEAT_REFRESH_TIME > current_time){
+                RVIZ_COMMON_LOG_WARNING(std::to_string(it->second.second.first));
+            } else{
+                RVIZ_COMMON_LOG_WARNING("Lost");
+            }
+        }
     }
 
     void DiagnosticOverlayAmr::RobotHeartbeatCallback(const amr_msgs::msg::Heartbeat & msg){
+        // get ros node
+        auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
+
         RVIZ_COMMON_LOG_WARNING("Callback");
+
+        //refresh the time the robot was detected
+        detected_robots[msg.robot_name].first = node->get_clock()->now().seconds();
     }
 
     void DiagnosticOverlayAmr::reset(){

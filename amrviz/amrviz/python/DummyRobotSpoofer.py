@@ -1,27 +1,18 @@
 #! /usr/bin/env python3
 
-import os
 import random
 
 import rclpy
-import enum
-import numpy
 from math import atan2
 from ament_index_python import get_package_share_directory
-from geometry_msgs.msg import Point, Pose, Quaternion, Vector3, PoseStamped, PoseWithCovarianceStamped, TransformStamped
+from geometry_msgs.msg import TransformStamped
 import rclpy.qos
 import rclpy.time
-from vision_msgs.msg import Detection3DArray
-from nav_msgs.msg import Odometry
-from rclpy.duration import Duration
 from rclpy.node import Node
-from std_msgs.msg import Float32
+from amr_msgs.msg import Heartbeat
 from tf2_ros import TransformBroadcaster, TransformStamped
 from transforms3d.euler import euler2quat
-from transforms3d.quaternions import qmult
-from visualization_msgs.msg import Marker, MarkerArray
-import yaml
-from ros2node.api import get_node_names
+
 
 
 class DummyRobotSpoofer(Node):
@@ -31,7 +22,7 @@ class DummyRobotSpoofer(Node):
         self.create_timer(1.0, self.update_pose)        
         self.create_timer(1.0, self.publish_heartbeat)
 
-        self.heartbeat_pub = self.create_publisher(Float32, "/robotdummy/heartbeat", qos_profile=rclpy.qos.qos_profile_system_default)
+        self.heartbeat_pub = self.create_publisher(Heartbeat, "/robotdummy/heartbeat", qos_profile=rclpy.qos.qos_profile_system_default)
 
         self.tf_broadcaster = TransformBroadcaster(self)
 
@@ -63,14 +54,18 @@ class DummyRobotSpoofer(Node):
         print(self.pose)
         
     def publish_heartbeat(self):
-        msg = Float32()
-        msg.data = -1.0
+        msg = Heartbeat()
+        msg.robot_name = "robotdummy"
+        msg.battery_voltage = -1.0
+        msg.uid_connected = False
+        msg.left_ir_connected = False
+        msg.right_ir_connected = False
+        msg.left_esc_connected = False
+        msg.right_esc_connected = False
 
         self.heartbeat_pub.publish(msg)
 
             
-
-        
 
 def main(args = None):
     rclpy.init(args = args)

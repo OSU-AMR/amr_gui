@@ -38,9 +38,10 @@ namespace amrviz
         void leakCallback(const std_msgs::msg::Bool& msg);
         void RobotHeartbeatCallback(const amr_msgs::msg::Heartbeat & msg);
 
-
         void checkTimeout();
         void refreshAvailableRobots();
+        void RobotStatusCheckCallback();
+
 
         protected Q_SLOTS:
         void updateFont();
@@ -54,7 +55,10 @@ namespace amrviz
         //timer for checking for available robots
         rclcpp::TimerBase::SharedPtr  availableRobotRefreshTimer;
 
-        std::map<std::string, double> detected_robots;
+        //timer for checking for available robots
+        rclcpp::TimerBase::SharedPtr  detectedRobotsStatusTimer;
+
+        std::map<std::string, std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>> detected_robots;
 
         // times for stamping
         rclcpp::Time lastDiag, lastKill, lastZed, lastLeak;
