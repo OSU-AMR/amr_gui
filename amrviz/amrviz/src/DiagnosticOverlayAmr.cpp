@@ -39,6 +39,7 @@ namespace amrviz
     }
 
     void DiagnosticOverlayAmr::onInitialize(){
+
         OverlayDisplay::onInitialize();
 
         // get our local rosnode
@@ -47,26 +48,26 @@ namespace amrviz
         // backdate timeouts
         lastDiag = node->get_clock()->now() - 1h;
         lastKill = node->get_clock()->now() - 1h;
-        lastZed = node->get_clock()->now() - 1h;
-        lastLeak = node->get_clock()->now() - 1h;
+        // lastZed = node->get_clock()->now() - 1h;
+        // lastLeak = node->get_clock()->now() - 1h;
 
         // make the diagnostic subscriber
         diagSub = node->create_subscription<diagnostic_msgs::msg::DiagnosticArray>(
             "/diagnostics_agg", rclcpp::SystemDefaultsQoS(), std::bind(&DiagnosticOverlayAmr::diagnosticCallback, this, _1)
         );
 
-        std::string zedTopic = robotNsProperty->getStdString() + "/zed/zed_node/temperature/imu";
-        zedSub = node->create_subscription<sensor_msgs::msg::Temperature>(
-            zedTopic, rclcpp::SystemDefaultsQoS(), std::bind(&DiagnosticOverlayAmr::zedCallback, this, _1)
-        );
+        // std::string zedTopic = robotNsProperty->getStdString() + "/zed/zed_node/temperature/imu";
+        // zedSub = node->create_subscription<sensor_msgs::msg::Temperature>(
+        //     zedTopic, rclcpp::SystemDefaultsQoS(), std::bind(&DiagnosticOverlayAmr::zedCallback, this, _1)
+        // );
 
-        std::string leakTopic = robotNsProperty->getStdString() + "/state/leak";
-        leakSub = node->create_subscription<std_msgs::msg::Bool>(
-            leakTopic, rclcpp::SystemDefaultsQoS(), std::bind(&DiagnosticOverlayAmr::leakCallback, this, _1)
-        );
+        // std::string leakTopic = robotNsProperty->getStdString() + "/state/leak";
+        // leakSub = node->create_subscription<std_msgs::msg::Bool>(
+        //     leakTopic, rclcpp::SystemDefaultsQoS(), std::bind(&DiagnosticOverlayAmr::leakCallback, this, _1)
+        // );
 
-        // watchdog timers for handling timeouts
-        checkTimer = node->create_wall_timer(0.25s, std::bind(&DiagnosticOverlayAmr::checkTimeout, this));
+        // // watchdog timers for handling timeouts
+        // checkTimer = node->create_wall_timer(0.25s, std::bind(&DiagnosticOverlayAmr::checkTimeout, this));
 
         //timer for checking for available robots
         availableRobotRefreshTimer = node->create_wall_timer(5s, std::bind(&DiagnosticOverlayAmr::refreshAvailableRobots, this));
@@ -84,11 +85,11 @@ namespace amrviz
         killLedConfig.inner_color_ = QColor(255, 0, 255, 255);
         killLedConfigId = addCircle(killLedConfig);
 
-        zedLedConfig.inner_color_ = QColor(255, 0, 255, 255);
-        //zedLedConfigId = addCircle(zedLedConfig);
+        // zedLedConfig.inner_color_ = QColor(255, 0, 255, 255);
+        // zedLedConfigId = addCircle(zedLedConfig);
 
-        leakLedConfig.inner_color_ = QColor(255, 0, 255, 255);
-        leakLedConfigId = addCircle(leakLedConfig);
+        // leakLedConfig.inner_color_ = QColor(255, 0, 255, 255);
+        // leakLedConfigId = addCircle(leakLedConfig);
 
         riptide_rviz::PaintedCircleConfig circle_pair_config = {
                             200, 200, 0, 0, 7, 9,
@@ -96,9 +97,9 @@ namespace amrviz
                             QColor(0, 0, 0, 255)
                         };
         
-        int id = addCircle(zedLedConfig);
+        //int id = addCircle(zedLedConfig);
 
-        updateCircle(id, zedLedConfig);
+        //updateCircle(id, zedLedConfig);
 
         // add the static design items
         riptide_rviz::PaintedTextConfig diagLedLabel = {
@@ -111,20 +112,21 @@ namespace amrviz
             fontName, false, 2, 12,
             QColor(255, 255, 255, 255)
         };
-        riptide_rviz::PaintedTextConfig zedLedLabel = {
-            87, 20, 0, 0, "Zed",
-            fontName, false, 2, 12,
-            QColor(255, 255, 255, 255)
-        };
-        riptide_rviz::PaintedTextConfig leakLedLabel = {
-            6, 70, 0, 0, "Leak",
-            fontName, false, 2, 12,
-            QColor(255, 255, 255, 255)
-        };
+        // riptide_rviz::PaintedTextConfig zedLedLabel = {
+        //     87, 20, 0, 0, "Zed",
+        //     fontName, false, 2, 12,
+        //     QColor(255, 255, 255, 255)
+        // };
+        // riptide_rviz::PaintedTextConfig leakLedLabel = {
+        //     6, 70, 0, 0, "Leak",
+        //     fontName, false, 2, 12,
+        //     QColor(255, 255, 255, 255)
+        // };
         addText(diagLedLabel);
         addText(killLedLabel);
-        addText(zedLedLabel);
-        addText(leakLedLabel);
+        // addText(zedLedLabel);
+        // addText(leakLedLabel);
+
     }
 
     void DiagnosticOverlayAmr::updateNS(){
@@ -202,59 +204,59 @@ namespace amrviz
         }
     }
 
-    void DiagnosticOverlayAmr::zedCallback(const sensor_msgs::msg::Temperature& msg) {
-        // get our local rosnode
-        auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
+    // void DiagnosticOverlayAmr::zedCallback(const sensor_msgs::msg::Temperature& msg) {
+    //     // get our local rosnode
+    //     auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
 
-        zedTimedOut = false;
+    //     zedTimedOut = false;
 
-        zedLedConfig.inner_color_ = QColor(0, 255, 0, 255);
-        updateCircle(zedLedConfigId, zedLedConfig);
+    //     zedLedConfig.inner_color_ = QColor(0, 255, 0, 255);
+    //     updateCircle(zedLedConfigId, zedLedConfig);
 
-        lastZed = node->get_clock()->now();
-    }
+    //     lastZed = node->get_clock()->now();
+    // }
 
-    void DiagnosticOverlayAmr::leakCallback(const std_msgs::msg::Bool& msg) {
-        static bool redFlash = true;
+    // void DiagnosticOverlayAmr::leakCallback(const std_msgs::msg::Bool& msg) {
+    //     static bool redFlash = true;
 
-        // get our local rosnode
-        auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
+    //     // get our local rosnode
+    //     auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
 
-        leakTimedOut = false;
+    //     leakTimedOut = false;
 
-        if (msg.data) {
-            if (redFlash) {
-                leakLedConfig.inner_color_ = QColor(255, 0, 0, 255);  // Flash red
-                redFlash = false;
-            }
-            else {
-                leakLedConfig.inner_color_ = QColor(252, 126, 0, 255);  // Flash orange
-                redFlash = true;
-            }
+    //     if (msg.data) {
+    //         if (redFlash) {
+    //             leakLedConfig.inner_color_ = QColor(255, 0, 0, 255);  // Flash red
+    //             redFlash = false;
+    //         }
+    //         else {
+    //             leakLedConfig.inner_color_ = QColor(252, 126, 0, 255);  // Flash orange
+    //             redFlash = true;
+    //         }
 
-            if (!startedLeaking) {
-                // Pop up an annoying box
-                QMessageBox msgBox;
-                msgBox.setWindowTitle("LEAK");
-                msgBox.setIcon(QMessageBox::Warning);
-                msgBox.setText(QString::fromStdString("Water was detected in one of the cages."));
+    //         if (!startedLeaking) {
+    //             // Pop up an annoying box
+    //             QMessageBox msgBox;
+    //             msgBox.setWindowTitle("LEAK");
+    //             msgBox.setIcon(QMessageBox::Warning);
+    //             msgBox.setText(QString::fromStdString("Water was detected in one of the cages."));
 
-                msgBox.setStandardButtons(QMessageBox::Ok);
-                msgBox.setDefaultButton(QMessageBox::Ok);
-                msgBox.exec();  
+    //             msgBox.setStandardButtons(QMessageBox::Ok);
+    //             msgBox.setDefaultButton(QMessageBox::Ok);
+    //             msgBox.exec();  
                 
-                startedLeaking = true;
-            }
+    //             startedLeaking = true;
+    //         }
 
-        }
-        else {
-            leakLedConfig.inner_color_ = QColor(0, 255, 0, 255);
-            startedLeaking = false;
-        }
+    //     }
+    //     else {
+    //         leakLedConfig.inner_color_ = QColor(0, 255, 0, 255);
+    //         startedLeaking = false;
+    //     }
 
-        updateCircle(leakLedConfigId, leakLedConfig);
-        lastLeak = node->get_clock()->now();
-    }
+    //     updateCircle(leakLedConfigId, leakLedConfig);
+    //     lastLeak = node->get_clock()->now();
+    // }
 
     void DiagnosticOverlayAmr::killCallback(const std_msgs::msg::Bool & msg){
         // get our local rosnode
@@ -297,64 +299,65 @@ namespace amrviz
         OverlayDisplay::update(wall_dt, ros_dt);
     }
 
-    void DiagnosticOverlayAmr::checkTimeout(){
-        // read current timeout property and convert to duration
-        auto timeoutDur = std::chrono::duration<double>(timeoutProperty->getFloat());
+    // void DiagnosticOverlayAmr::checkTimeout(){
+    //     // read current timeout property and convert to duration
+    //     auto timeoutDur = std::chrono::duration<double>(timeoutProperty->getFloat());
 
-        // get our local rosnode
-        auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
+    //     // get our local rosnode
+    //     auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
 
-        // check for diagnostic timeout
-        auto duration = node->get_clock()->now() - lastDiag;
-        if(duration > timeoutDur){
-            if(! diagsTimedOut){
-                RVIZ_COMMON_LOG_WARNING("DiagnosticsOverlay: Diagnostics timed out!");
-                diagsTimedOut = true;
-            }
+    //     // check for diagnostic timeout
+    //     auto duration = node->get_clock()->now() - lastDiag;
+    //     if(duration > timeoutDur){
+    //         if(! diagsTimedOut){
+    //             RVIZ_COMMON_LOG_WARNING("DiagnosticsOverlay: Diagnostics timed out!");
+    //             diagsTimedOut = true;
+    //         }
 
-            // diagnostics timed out, reset them
-            voltageConfig.text_color_ = QColor(255, 0, 255, 255);
-            updateText(voltageTextId, voltageConfig);
+    //         // diagnostics timed out, reset them
+    //         voltageConfig.text_color_ = QColor(255, 0, 255, 255);
+    //         updateText(voltageTextId, voltageConfig);
 
-            diagLedConfig.inner_color_ = QColor(255, 0, 255, 255);
-            updateCircle(diagLedConfigId, diagLedConfig);
-        }
+    //         diagLedConfig.inner_color_ = QColor(255, 0, 255, 255);
+    //         updateCircle(diagLedConfigId, diagLedConfig);
+    //     }
 
-        // check for kill timeout
-        duration = node->get_clock()->now() - lastKill;
-        if(duration > timeoutDur){
-            if(! killTimedOut){
-                RVIZ_COMMON_LOG_WARNING("DiagnosticsOverlay: Kill switch timed out!");
-                killTimedOut = true;
-            }
+    //     // check for kill timeout
+    //     duration = node->get_clock()->now() - lastKill;
+    //     if(duration > timeoutDur){
+    //         if(! killTimedOut){
+    //             RVIZ_COMMON_LOG_WARNING("DiagnosticsOverlay: Kill switch timed out!");
+    //             killTimedOut = true;
+    //         }
 
-            // diagnostics timed out, reset them
-            killLedConfig.inner_color_ = QColor(255, 0, 255, 255);
-            updateCircle(killLedConfigId, killLedConfig);
-        }
+    //         // diagnostics timed out, reset them
+    //         killLedConfig.inner_color_ = QColor(255, 0, 255, 255);
+    //         updateCircle(killLedConfigId, killLedConfig);
+    //     }
 
-        duration = node->get_clock()->now() - lastZed;
-        if (duration > std::chrono::duration<double>(1.0f)) {
-            if (!zedTimedOut) {
-                RVIZ_COMMON_LOG_WARNING("DiagnosticsOverlay: Zed connection timed out!");
-                zedTimedOut = true;
-            }
 
-            zedLedConfig.inner_color_ = QColor(255, 0, 0, 255);
-            updateCircle(zedLedConfigId, zedLedConfig);
-        }
+    //     duration = node->get_clock()->now() - lastZed;
+    //     if (duration > std::chrono::duration<double>(1.0f)) {
+    //         if (!zedTimedOut) {
+    //             RVIZ_COMMON_LOG_WARNING("DiagnosticsOverlay: Zed connection timed out!");
+    //             zedTimedOut = true;
+    //         }
 
-        duration = node->get_clock()->now() - lastLeak;
-        if (duration > std::chrono::duration<double>(2.0s)) {
-            if (!leakTimedOut) {
-                RVIZ_COMMON_LOG_WARNING("DiagnosticsOverlay: Leak sensors timed out!");
-                leakTimedOut = true;
-            }
+    //         zedLedConfig.inner_color_ = QColor(255, 0, 0, 255);
+    //         updateCircle(zedLedConfigId, zedLedConfig);
+    //     }
 
-            leakLedConfig.inner_color_ = QColor(255, 0, 255, 255);
-            updateCircle(leakLedConfigId, leakLedConfig);
-        }
-    }
+    //     duration = node->get_clock()->now() - lastLeak;
+    //     if (duration > std::chrono::duration<double>(2.0s)) {
+    //         if (!leakTimedOut) {
+    //             RVIZ_COMMON_LOG_WARNING("DiagnosticsOverlay: Leak sensors timed out!");
+    //             leakTimedOut = true;
+    //         }
+
+    //         leakLedConfig.inner_color_ = QColor(255, 0, 255, 255);
+    //         updateCircle(leakLedConfigId, leakLedConfig);
+    //     }
+    // }
 
     void DiagnosticOverlayAmr::refreshAvailableRobots(){
 
@@ -397,6 +400,8 @@ namespace amrviz
                             QColor(255, 0, 255, 255),
                             QColor(0, 0, 0, 255)
                         };
+
+                        int id = addCircle(circle_pair_config);
 
                         std::pair<int, riptide_rviz::PaintedCircleConfig> circlepair = std::pair<int, riptide_rviz::PaintedCircleConfig>(addCircle(circle_pair_config), circle_pair_config);
                         

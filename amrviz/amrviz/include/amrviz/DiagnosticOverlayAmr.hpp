@@ -34,8 +34,8 @@ namespace amrviz
 
         void diagnosticCallback(const diagnostic_msgs::msg::DiagnosticArray & msg);
         void killCallback(const std_msgs::msg::Bool & msg);
-        void zedCallback(const sensor_msgs::msg::Temperature& msg);
-        void leakCallback(const std_msgs::msg::Bool& msg);
+        //void zedCallback(const sensor_msgs::msg::Temperature& msg);
+        //void leakCallback(const std_msgs::msg::Bool& msg);
         void RobotHeartbeatCallback(const amr_msgs::msg::Heartbeat & msg);
 
         void checkTimeout();
@@ -68,8 +68,8 @@ namespace amrviz
         // subscription for diagnostics
         rclcpp::Subscription<diagnostic_msgs::msg::DiagnosticArray>::SharedPtr diagSub;
         rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr killSub;
-        rclcpp::Subscription<sensor_msgs::msg::Temperature>::SharedPtr zedSub;
-        rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr leakSub;
+        //rclcpp::Subscription<sensor_msgs::msg::Temperature>::SharedPtr zedSub;
+        //rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr leakSub;
 
         //subscription arrary for robots
         std::vector<rclcpp::Subscription<amr_msgs::msg::Heartbeat>::SharedPtr> diag_subs;
@@ -78,8 +78,8 @@ namespace amrviz
         int voltageTextId = -1;
         int diagLedConfigId = -1;
         int killLedConfigId = -1;
-        int zedLedConfigId = -1;
-        int leakLedConfigId = -1;
+        //int zedLedConfigId = -1;
+        //int leakLedConfigId = -1;
 
         // font configuration info
         QStringList fontFamilies;
@@ -101,16 +101,16 @@ namespace amrviz
             QColor(255, 0, 255, 255),
             QColor(0, 0, 0, 255)
         };
-        riptide_rviz::PaintedCircleConfig zedLedConfig = {
-            100, 50, 0, 0, 7, 9,
-            QColor(255, 0, 255, 255),
-            QColor(0, 0, 0, 255)
-        };
-        riptide_rviz::PaintedCircleConfig leakLedConfig = {
-            20, 100, 0, 0, 7, 9,
-            QColor(255, 0, 255, 255),
-            QColor(0, 0, 0, 255)
-        };
+        // riptide_rviz::PaintedCircleConfig zedLedConfig = {
+        //     100, 50, 0, 0, 7, 9,
+        //     QColor(255, 0, 255, 255),
+        //     QColor(0, 0, 0, 255)
+        // };
+        // riptide_rviz::PaintedCircleConfig leakLedConfig = {
+        //     20, 100, 0, 0, 7, 9,
+        //     QColor(255, 0, 255, 255),
+        //     QColor(0, 0, 0, 255)
+        // };
         riptide_rviz::PaintedTextConfig voltageConfig = {
             12, 0, 0, 0, "00.00 V",
             fontName, false, 2, 12,
