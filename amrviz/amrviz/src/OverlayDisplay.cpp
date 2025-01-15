@@ -313,6 +313,12 @@ namespace riptide_rviz {
         require_update_texture_ = true;
     }
 
+    void OverlayDisplay::setWidth(int width){
+        width_property_->setValue(width);
+        updateWidth();
+    }
+
+
 } // namespace rviz_2d_overlay_plugins
 
 // Since this is a parent class this has been removed

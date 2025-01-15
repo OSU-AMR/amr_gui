@@ -86,6 +86,8 @@ namespace riptide_rviz {
 
         void clearElements();
 
+        void setWidth(int);
+
       protected:
         // helper functions for drawing text and other things on the base figure
         void paintText(const PaintedTextConfig & config, QPainter & painter);

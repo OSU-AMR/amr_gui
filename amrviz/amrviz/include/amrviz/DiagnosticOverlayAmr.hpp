@@ -58,7 +58,7 @@ namespace amrviz
         //timer for checking for available robots
         rclcpp::TimerBase::SharedPtr  detectedRobotsStatusTimer;
 
-        std::map<std::string, std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>> detected_robots;
+        std::map<std::string, std::pair<double, std::pair<int, std::pair<int, int>>>> detected_robots;
 
         // times for stamping
         rclcpp::Time lastDiag, lastKill, lastZed, lastLeak;
@@ -111,11 +111,14 @@ namespace amrviz
         //     QColor(255, 0, 255, 255),
         //     QColor(0, 0, 0, 255)
         // };
-        riptide_rviz::PaintedTextConfig voltageConfig = {
-            12, 0, 0, 0, "00.00 V",
-            fontName, false, 2, 12,
-            QColor(255, 0, 0, 255)
-        };
+        // riptide_rviz::PaintedTextConfig voltageConfig = {
+        //     12, 0, 0, 0, "00.00 V",
+        //     fontName, false, 2, 12,
+        //     QColor(255, 0, 0, 255)
+        // };
+
+        std::vector<riptide_rviz::PaintedCircleConfig> robot_diag_lights; 
+        std::vector<riptide_rviz::PaintedTextConfig> robot_voltage_labels; 
 
         std::vector<int> indicatorIds;
         std::vector<riptide_rviz::PaintedCircleConfig> robotIndicatorConfig;

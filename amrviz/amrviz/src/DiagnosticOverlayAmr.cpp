@@ -76,8 +76,8 @@ namespace amrviz
         detectedRobotsStatusTimer = node->create_wall_timer(1s, std::bind(&DiagnosticOverlayAmr::RobotStatusCheckCallback, this));
 
         // add all of the variable design items
-        voltageConfig.text_color_ = QColor(255, 0, 255, 255);
-        voltageTextId = addText(voltageConfig);
+        // voltageConfig.text_color_ = QColor(255, 0, 255, 255);
+        // voltageTextId = addText(voltageConfig);
 
         diagLedConfig.inner_color_ = QColor(255, 0, 255, 255);
         diagLedConfigId = addCircle(diagLedConfig);
@@ -90,12 +90,6 @@ namespace amrviz
 
         // leakLedConfig.inner_color_ = QColor(255, 0, 255, 255);
         // leakLedConfigId = addCircle(leakLedConfig);
-
-        riptide_rviz::PaintedCircleConfig circle_pair_config = {
-                            200, 200, 0, 0, 7, 9,
-                            QColor(255, 0, 255, 255),
-                            QColor(0, 0, 0, 255)
-                        };
         
         //int id = addCircle(zedLedConfig);
 
@@ -112,6 +106,7 @@ namespace amrviz
             fontName, false, 2, 12,
             QColor(255, 255, 255, 255)
         };
+
         // riptide_rviz::PaintedTextConfig zedLedLabel = {
         //     87, 20, 0, 0, "Zed",
         //     fontName, false, 2, 12,
@@ -153,41 +148,41 @@ namespace amrviz
         // look for specific packets
         for(auto diagnostic : msg.status){
             // handle robot voltage packet
-            if(diagnostic.name == "/Robot Diagnostics/Electronics/Voltages and Currents/V+ Rail Voltage"){
-                bool found = false;
-                voltageConfig.text_ = "00.00 V";
-                voltageConfig.text_color_ = QColor(255, 0, 0, 255);
+            // if(diagnostic.name == "/Robot Diagnostics/Electronics/Voltages and Currents/V+ Rail Voltage"){
+            //     bool found = false;
+            //     voltageConfig.text_ = "00.00 V";
+            //     voltageConfig.text_color_ = QColor(255, 0, 0, 255);
                 
-                for(auto pair : diagnostic.values){
-                    if(pair.key == "V+ Rail Voltage"){
-                        found = true;
-                        voltageConfig.text_ = pair.value;
-                    }
-                }
+            //     for(auto pair : diagnostic.values){
+            //         if(pair.key == "V+ Rail Voltage"){
+            //             found = true;
+            //             voltageConfig.text_ = pair.value;
+            //         }
+            //     }
 
-                if(!found){
-                    voltageConfig.text_ = "BAD CONV";
-                }
+            //     if(!found){
+            //         voltageConfig.text_ = "BAD CONV";
+            //     }
 
-                // now we need to look at the status of the voltage to determine color
-                // ok is green, warn is yellow, error is red
-                if(diagnostic.level == diagnostic.ERROR){
-                    voltageConfig.text_color_ = QColor(255, 0, 0, 255);
-                } else if (diagnostic.level == diagnostic.WARN){
-                    voltageConfig.text_color_ = QColor(255, 255, 0, 255);
-                } else if (diagnostic.level == diagnostic.STALE){
-                    diagLedConfig.inner_color_ = QColor(255, 0, 255, 255);
-                } else {
-                    voltageConfig.text_color_ = QColor(0, 255, 0, 255);
-                }
+            //     // now we need to look at the status of the voltage to determine color
+            //     // ok is green, warn is yellow, error is red
+            //     if(diagnostic.level == diagnostic.ERROR){
+            //         voltageConfig.text_color_ = QColor(255, 0, 0, 255);
+            //     } else if (diagnostic.level == diagnostic.WARN){
+            //         voltageConfig.text_color_ = QColor(255, 255, 0, 255);
+            //     } else if (diagnostic.level == diagnostic.STALE){
+            //         diagLedConfig.inner_color_ = QColor(255, 0, 255, 255);
+            //     } else {
+            //         voltageConfig.text_color_ = QColor(0, 255, 0, 255);
+            //     }
                 
 
-                // edit the text
-                updateText(voltageTextId, voltageConfig);
-            }
+            //     // edit the text
+            //     updateText(voltageTextId, voltageConfig);
+            // }
 
             // handle general packet for LED
-            else if(diagnostic.name == "/Robot Diagnostics"){
+            if(diagnostic.name == "/Robot Diagnostics"){
                 // Determine the LED color to use
                 if(diagnostic.level == diagnostic.ERROR){
                     diagLedConfig.inner_color_ = QColor(255, 0, 0, 255);
@@ -380,7 +375,7 @@ namespace amrviz
 
                     //check to see if the robot has alread been detected
                     bool detected = false;
-                    std::map<std::string, std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>>::iterator inner_itr;
+                    std::map<std::string, std::pair<double, std::pair<int, std::pair<int, int>>>>::iterator inner_itr;
                     for(inner_itr = detected_robots.begin(); inner_itr != detected_robots.end(); inner_itr++){
                         if(!inner_itr->first.compare(parts.at(1))){
                             detected = true;
@@ -392,27 +387,54 @@ namespace amrviz
                         //current time
                         double current_time = node->get_clock()->now().seconds();
 
-                        //add check for size...
+                        // x of lights
+                        int x_pos = 110;
+                        if(robot_diag_lights.size() > 0){
+                            x_pos = robot_diag_lights[robot_diag_lights.size() - 1].x_ + 50;
+                        }                        
                         
                         //create display config
                         riptide_rviz::PaintedCircleConfig circle_pair_config = {
-                            200, 200, 0, 0, 7, 9,
+                            x_pos, 50, 0, 0, 7, 9,
                             QColor(255, 0, 255, 255),
                             QColor(0, 0, 0, 255)
                         };
 
-                        int id = addCircle(circle_pair_config);
+                        circle_pair_config.inner_color_ = QColor(255, 255, 0, 255);
 
-                        std::pair<int, riptide_rviz::PaintedCircleConfig> circlepair = std::pair<int, riptide_rviz::PaintedCircleConfig>(addCircle(circle_pair_config), circle_pair_config);
+                        //add display config to 
+                        robot_diag_lights.push_back(circle_pair_config);
+                        int led_id = addCircle(robot_diag_lights[robot_diag_lights.size() - 1]);
+
+                        //add voltage label
+                        riptide_rviz::PaintedTextConfig robot_voltage_label = {
+                            x_pos - 20, 0, 40, 0, "00.00V",
+                            fontName, false, 2, 12,
+                            QColor(255, 255, 255, 255)
+                        };
+                        robot_voltage_labels.push_back(robot_voltage_label);
+                        int voltage_id = addText(robot_voltage_labels[robot_voltage_labels.size() - 1]);
                         
                         //add to list to check in the future
-                        std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>> value_pair = std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>(current_time, circlepair);
-                        detected_robots.insert(std::pair<std::string, std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>>(parts.at(1), value_pair));
+                        std::pair<int, int> id_pair = std::pair<int, int>(voltage_id, led_id);
+                        std::pair<int, std::pair<int, int>> circlepair = std::pair<int, std::pair<int, int>>(robot_diag_lights.size() - 1, id_pair);
+                        std::pair<double, std::pair<int, std::pair<int, int>>> value_pair = std::pair<double, std::pair<int, std::pair<int, int>>>(current_time, circlepair);
+                        detected_robots.insert(std::pair<std::string, std::pair<double, std::pair<int, std::pair<int, int>>>>(parts.at(1), value_pair));
+
+                        //add text to the dot
+                        riptide_rviz::PaintedTextConfig robot_diag_label = {
+                            x_pos - 24, 21, 48, 0, parts.at(1),
+                            fontName, false, 2, 10,
+                            QColor(255, 255, 255, 255)
+                        };
+                        addText(robot_diag_label);
 
                         //create callback
                         diag_subs.push_back(node->create_subscription<amr_msgs::msg::Heartbeat>(itr->first, rclcpp::SystemDefaultsQoS(), std::bind(&DiagnosticOverlayAmr::RobotHeartbeatCallback, this, _1)));
-                    }
 
+                        //ensure their is enought width for all lights
+                        setWidth(x_pos + 50);
+                    }
                 }
             }
         }
@@ -422,16 +444,18 @@ namespace amrviz
         // get ros node
         auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
 
-        std::map<std::string, std::pair<double, std::pair<int, riptide_rviz::PaintedCircleConfig>>>::iterator it;
+        std::map<std::string, std::pair<double, std::pair<int, std::pair<int, int>>>>::iterator it;
 
         double current_time = node->get_clock()->now().seconds();
 
         for(it = detected_robots.begin(); it != detected_robots.end(); it++){
-            if(it->second.first + ROBOT_HEARTBEAT_REFRESH_TIME > current_time){
-                RVIZ_COMMON_LOG_WARNING(std::to_string(it->second.second.first));
-            } else{
-                RVIZ_COMMON_LOG_WARNING("Lost");
+            if(!(it->second.first + ROBOT_HEARTBEAT_REFRESH_TIME > current_time)){
+                //give lost status light
+                robot_diag_lights[it->second.second.first].inner_color_ =  QColor(255, 0, 255, 255);
+                updateCircle(it->second.second.second.second, robot_diag_lights[it->second.second.first]);            
             }
+
+            RVIZ_COMMON_LOG_INFO_STREAM("Here");
         }
     }
 
@@ -439,11 +463,28 @@ namespace amrviz
         // get ros node
         auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
 
-        RVIZ_COMMON_LOG_WARNING("Callback");
-
         //refresh the time the robot was detected
         detected_robots[msg.robot_name].first = node->get_clock()->now().seconds();
-    }
+
+        //check for any sensor disconnections -> if so set light to orange
+        if(!msg.left_esc_connected || !msg.right_esc_connected || !msg.left_ir_connected || !msg.right_ir_connected || !msg.uid_connected){
+            //orange error light
+            robot_diag_lights[detected_robots[msg.robot_name].second.first].inner_color_ = QColor(255, 165, 0, 255);
+            updateCircle(detected_robots[msg.robot_name].second.second.second, robot_diag_lights[detected_robots[msg.robot_name].second.first]);
+        } else {
+            //give positive status light
+            robot_diag_lights[detected_robots[msg.robot_name].second.first].inner_color_ = QColor(0, 255, 0, 255);
+            updateCircle(detected_robots[msg.robot_name].second.second.second, robot_diag_lights[detected_robots[msg.robot_name].second.first]);
+        }
+
+        //update the voltage display
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(2) << msg.battery_voltage;
+        std::string voltage_string = ss.str() + "V";
+        robot_voltage_labels[detected_robots[msg.robot_name].second.first].text_ = voltage_string;
+        updateText(detected_robots[msg.robot_name].second.second.first, robot_voltage_labels[detected_robots[msg.robot_name].second.first]);
+
+    } 
 
     void DiagnosticOverlayAmr::reset(){
         OverlayDisplay::reset();

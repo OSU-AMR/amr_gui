@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /DiagnosticOverlayAmr1
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz_common/Selection
@@ -59,20 +60,7 @@ Visualization Manager:
       robot_namespace: /talos
       ver_alignment: top
       ver_dist: 0
-      width: 128
-    - Class: amrviz/DiagnosticOverlayAmr
-      Enabled: true
-      Name: DiagnosticOverlayAmr
-      Value: true
-      diagnostic_timeout: 10
-      font: DejaVu Sans Mono
-      height: 128
-      hor_alignment: left
-      hor_dist: 0
-      robot_namespace: /talos
-      ver_alignment: top
-      ver_dist: 0
-      width: 128
+      width: 2200
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

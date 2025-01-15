@@ -12,23 +12,37 @@ from rclpy.node import Node
 from amr_msgs.msg import Heartbeat
 from tf2_ros import TransformBroadcaster, TransformStamped
 from transforms3d.euler import euler2quat
+from time import sleep
+from math import floor
 
 
 
 class DummyRobotSpoofer(Node):
     def __init__(self):
-        super().__init__("dummyrobotspoofer")
+        
+        super().__init__(f"dummyrobotspoofer_{floor(random.random() * 100000)}")
 
         self.create_timer(1.0, self.update_pose)        
         self.create_timer(1.0, self.publish_heartbeat)
 
-        self.heartbeat_pub = self.create_publisher(Heartbeat, "/robotdummy/heartbeat", qos_profile=rclpy.qos.qos_profile_system_default)
+        self.declare_parameter("robot_name", "robotdummy")
+        self.declare_parameter("voltage_level", -1.0)
+
+        self.heartbeat_pub = self.create_publisher(Heartbeat, "/" + str(self.get_parameter("robot_name").value) + "/heartbeat", qos_profile=rclpy.qos.qos_profile_system_default)
 
         self.tf_broadcaster = TransformBroadcaster(self)
 
         self.pose = [0.0,0.0,0.0,0.0,0.0,0.0]
 
+        self.name_cb_timer = self.create_timer(1.0, self.set_name_cb)
 
+    def set_name_cb(self):
+        if(str(self.get_parameter("robot_name").value ) != "robotdummy"):
+            self.heartbeat_pub = self.create_publisher(Heartbeat, "/" + str(self.get_parameter("robot_name").value) + "/heartbeat", qos_profile=rclpy.qos.qos_profile_system_default)
+
+            self.name_cb_timer.cancel()
+
+        
 
     def update_pose(self):
         t = TransformStamped()
@@ -56,7 +70,7 @@ class DummyRobotSpoofer(Node):
     def publish_heartbeat(self):
         msg = Heartbeat()
         msg.robot_name = "robotdummy"
-        msg.battery_voltage = -1.0
+        msg.battery_voltage = self.get_parameter("voltage_level").value
         msg.uid_connected = False
         msg.left_ir_connected = False
         msg.right_ir_connected = False
