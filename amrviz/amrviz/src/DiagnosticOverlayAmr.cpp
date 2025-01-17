@@ -24,9 +24,6 @@ namespace amrviz
             fontProperty->addOption(fontFamilies[i], (int) i);
         }
 
-        robotNsProperty = new rviz_common::properties::StringProperty(
-            "robot_namespace", "/talos", "Robot namespace to attach to", this, SLOT(updateNS()));
-
         timeoutProperty = new rviz_common::properties::FloatProperty(
             "diagnostic_timeout", 10.0, "Maximum time between diagnostic packets before default", this);
 
@@ -122,19 +119,6 @@ namespace amrviz
         // addText(zedLedLabel);
         // addText(leakLedLabel);
 
-    }
-
-    void DiagnosticOverlayAmr::updateNS(){
-        RVIZ_COMMON_LOG_INFO_STREAM("DiagnosticOverlay: Robot NS update " << robotNsProperty->getStdString());
-        killSub.reset();
-
-        // get our local rosnode
-        auto node = context_->getRosNodeAbstraction().lock()->get_raw_node();
-
-        killSub = node->create_subscription<std_msgs::msg::Bool>(
-            robotNsProperty->getStdString() + "/state/kill", rclcpp::SystemDefaultsQoS(),
-            std::bind(&DiagnosticOverlayAmr::killCallback, this, _1)
-        );
     }
 
     void DiagnosticOverlayAmr::diagnosticCallback(const diagnostic_msgs::msg::DiagnosticArray & msg){

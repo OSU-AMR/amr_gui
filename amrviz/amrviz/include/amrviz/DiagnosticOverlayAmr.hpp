@@ -45,8 +45,7 @@ namespace amrviz
 
         protected Q_SLOTS:
         void updateFont();
-        void updateNS();
-
+        
         private:
 
         // timer for determining timeouts

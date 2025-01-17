@@ -16,7 +16,7 @@ from rclpy.duration import Duration
 from rclpy.node import Node
 from std_msgs.msg import ColorRGBA
 from tf2_ros import Buffer, TransformListener, StaticTransformBroadcaster
-from transforms3d.euler import euler2quat
+from transforms3d.euler import euler2quat, quat2rotm
 from transforms3d.quaternions import qmult
 from visualization_msgs.msg import Marker, MarkerArray
 import yaml
@@ -250,7 +250,151 @@ class GridPublisher(Node):
         print("Published the msg")
 
             
+    def configure_tile(self, key, config):
 
+        #list of markers to be added
+        marker_list = []
+        
+        #fill out marker header
+        marker = Marker()
+        marker.header.frame_id = self.config_file["top"]["map_frame"]
+        marker.header.stamp = rclpy.time.Time().to_msg()
+        marker.ns = key
+        marker.id = 3
+        marker.type = 10
+        marker.action = 0
+        marker.frame_locked = True
+
+        #fill out pose fto_msg(self)or marker
+        pose = Pose()
+        pose.position.x = config["pose"][0]
+        pose.position.y = config["pose"][1]
+        pose.position.z = config["pose"][2]
+
+        #get rotation in the form of quaternion
+        orientation = euler2quat(config["pose"][3], config["pose"][4], config["pose"][5])
+
+        pose.orientation.x = orientation[1]
+        pose.orientation.y = orientation[2]
+        pose.orientation.z = orientation[3]
+        pose.orientation.w = orientation[0]
+
+        #fill out scale for marker
+        scale = Vector3()
+        scale.x = config["scale"][0]
+        scale.y = config["scale"][1]
+        scale.z = config["scale"][2]
+
+        #color
+        color = ColorRGBA()
+        color.r = config["color"][0]
+        color.b = config["color"][1]
+        color.g = config["color"][2]
+        color.a = config["color"][3]
+
+        #duration
+        duration = Duration().to_msg()
+        duration.nanosec = 0
+        duration.sec = 0
+
+        marker.pose = pose
+        marker.scale = scale
+        marker.color = color
+        marker.lifetime = duration
+
+        mesh = "tile"
+
+        #handle mesh cases
+        match config["mesh"]:
+
+            case "tile_T":
+                #tile mesh
+                mesh = "tile"
+
+                #cook up tape
+                
+                
+
+
+            case "tile":                
+                mesh = "tile"
+
+            case _:
+                #default to plain tile
+                mesh = "tile"
+                print(f"Unrecognized marker name {config["mesh"]}")
+
+
+        #set mesh resource
+        marker.mesh_resource = "file://" + os.path.join(get_package_share_directory(self.mesh_pkg), self.mesh_folder, mesh, "model.ply")
+        marker.mesh_use_embedded_materials = False
+        
+        marker_list.append(marker)
+
+        return marker_list
+    
+    def configure_tape_strip(self, tile_config, tape_config):
+        #fill out marker header
+        marker = Marker()
+        marker.header.frame_id = self.config_file["top"]["map_frame"]
+        marker.header.stamp = rclpy.time.Time().to_msg()
+        marker.ns = key
+        marker.id = 3
+        marker.type = 10
+        marker.action = 0
+        marker.frame_locked = True
+
+        #tile orientation
+        tile_orientation = euler2quat(tile_config["pose"][3], tile_config["pose"][4], tile_config["pose"][5])
+
+        #tile_rotm
+        tile_rotm = quat2rotm(tile_orientation)
+
+
+        #fill out pose fto_msg(self)or marker
+        pose = Pose()
+        pose.position.x = tape_config["pose"][0] + tile_config[["pose"][0]]
+        pose.position.y = tape_config["pose"][1] + tile_config[["pose"][0]]
+        pose.position.z = tape_config["pose"][2] + tile_config[["pose"][0]]
+
+        #get rotation in the form of quaternion
+        orientation = euler2quat(tape_config["pose"][3], tape_config["pose"][4], tape_config["pose"][5])
+
+        pose.orientation.x = orientation[1]
+        pose.orientation.y = orientation[2]
+        pose.orientation.z = orientation[3]
+        pose.orientation.w = orientation[0]
+
+        #fill out scale for marker
+        scale = Vector3()
+        scale.x = config["scale"][0]
+        scale.y = config["scale"][1]
+        scale.z = config["scale"][2]
+
+        #color
+        color = ColorRGBA()
+        color.r = tape_config["color"][0]
+        color.b = tape_config["color"][1]
+        color.g = tape_config["color"][2]
+        color.a = tape_config["color"][3]
+
+        #duration
+        duration = Duration().to_msg()
+        duration.nanosec = 0
+        duration.sec = 0
+
+        marker.pose = pose
+        marker.scale = scale
+        marker.color = color
+        marker.lifetime = duration
+                
+        #set mesh resource
+        marker.mesh_resource = "file://" + os.path.join(get_package_share_directory(self.mesh_pkg), self.mesh_folder, tape_config["mesh"], "model.ply")
+        marker.mesh_use_embedded_materials = False
+
+        return marker
+
+        
         
 
 def main(args = None):

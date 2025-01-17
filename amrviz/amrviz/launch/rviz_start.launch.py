@@ -18,18 +18,18 @@ def generate_launch_description():
         GroupAction(
             actions=[
                 # declare the launch args here
-                DeclareLaunchArgument(
-                    "robot", 
-                    default_value=robot,
-                    description="Name of the vehicle",
-                ),
+                # DeclareLaunchArgument(
+                #     "robot", 
+                #     default_value=robot,
+                #     description="Name of the vehicle",
+                # ),
 
                 DeclareLaunchArgument(
                     "control_config_file",
-                    default_value=["control_config_", LC("robot"), ".rviz"]
+                    default_value=["control_config_", "central", ".rviz"]
                 ),
 
-                DeclareLaunchArgument('robot_yaml', default_value=[LC("robot"), '.yaml']),
+                # DeclareLaunchArgument('robot_yaml', default_value=[LC("robot"), '.yaml']),
 
                 # start rviz
                 Node(
@@ -49,7 +49,7 @@ def generate_launch_description():
                 ),
 
                 # send the rest into the robot namespace
-                PushRosNamespace(["/", LC('robot')]),
+                PushRosNamespace(["/",  "central"]),
                 
                 Node(
                     package="amrviz",
