@@ -4,7 +4,7 @@ import os
 
 import rclpy
 import enum
-import numpy
+import numpy 
 from math import atan2
 from ament_index_python import get_package_share_directory
 from geometry_msgs.msg import Point, Pose, Quaternion, Vector3, PoseStamped, PoseWithCovarianceStamped, TransformStamped
@@ -16,7 +16,7 @@ from rclpy.duration import Duration
 from rclpy.node import Node
 from std_msgs.msg import ColorRGBA
 from tf2_ros import Buffer, TransformListener, StaticTransformBroadcaster
-from transforms3d.euler import euler2quat, quat2rotm
+from transforms3d.euler import euler2quat, quat2mat
 from transforms3d.quaternions import qmult
 from visualization_msgs.msg import Marker, MarkerArray
 import yaml
@@ -30,9 +30,10 @@ class GridPublisher(Node):
         #publishers
         self.layout_pub = self.create_publisher(MarkerArray, "layout_array", rclpy.qos.qos_profile_system_default)
         self.robot_pub = self.create_publisher(MarkerArray, "robot_array", rclpy.qos.qos_profile_system_default)
+        self.
         
         #timers
-        self.marker_pub_cb_timer = self.create_timer(1.0, self.MarkerPublishCallback)
+        self.marker_pub_cb_timer = self.create_timer(2.0, self.MarkerPublishCallback)
         self.robot_pub_timer = self.create_timer(1.0, self.updateRobotStatus)
 
         #tf
@@ -80,71 +81,24 @@ class GridPublisher(Node):
 
 
     def MarkerPublishCallback(self):
+
         markers = []
 
         tiles = self.config_file["top"]["tiles"]
         
-
         for tile_key in tiles.keys():
             #the yaml tile object
             tile = tiles[tile_key]
 
+            tile_markers = self.configure_tile(tile_key, tile, self.config_file["top"]["tape_configurations"])
 
-            #fill out marker header
-            marker = Marker()
-            marker.header.frame_id = self.config_file["top"]["map_frame"]
-            marker.header.stamp = rclpy.time.Time().to_msg()
-            marker.ns = tile_key
-            marker.id = 3
-            marker.type = 10
-            marker.action = 0
-            marker.frame_locked = True
-
-            #fill out pose fto_msg(self)or marker
-            pose = Pose()
-            pose.position.x = tile["pose"][0]
-            pose.position.y = tile["pose"][1]
-            pose.position.z = tile["pose"][2]
-
-            #get rotation in the form of quaternion
-            orientation = euler2quat(tile["pose"][3], tile["pose"][4], tile["pose"][5])
-
-            pose.orientation.x = orientation[1]
-            pose.orientation.y = orientation[2]
-            pose.orientation.z = orientation[3]
-            pose.orientation.w = orientation[0]
-
-            #fill out scale for marker
-            scale = Vector3()
-            scale.x = tile["scale"][0]
-            scale.y = tile["scale"][1]
-            scale.z = tile["scale"][2]
-
-            #color
-            color = ColorRGBA()
-            color.r = tile["color"][0]
-            color.b = tile["color"][1]
-            color.g = tile["color"][2]
-            color.a = tile["color"][3]
-
-            #duration
-            duration = Duration().to_msg()
-            duration.nanosec = 0
-            duration.sec = 0
-
-            marker.pose = pose
-            marker.scale = scale
-            marker.color = color
-            marker.lifetime = duration
-
-            #set mesh resource
-            marker.mesh_resource = "file://" + os.path.join(get_package_share_directory(self.mesh_pkg), self.mesh_folder, tile["mesh"], "model.ply")
-            marker.mesh_use_embedded_materials = False
-
-            markers.append(marker)
+            for marker in tile_markers:
+                markers.append(marker)
+                print("added")
  
         msg = MarkerArray()
         msg.markers = markers
+
 
         self.layout_pub.publish(msg)
 
@@ -155,7 +109,6 @@ class GridPublisher(Node):
 
     def updateRobotStatus(self):
         current_time = self.get_clock().now().nanoseconds
-
 
         #check for heartbeat topics
         for node_name in get_node_names(node=self):
@@ -175,8 +128,6 @@ class GridPublisher(Node):
         markers = []
 
         robots = self.config_file["top"]["robots"]
-
-        
 
         for robot_key in robots.keys():
             #the yaml tile object
@@ -244,13 +195,10 @@ class GridPublisher(Node):
 
         self.robot_pub.publish(msg)
 
-        #cancel timer so it only does this once
-        self.marker_pub_cb_timer.cancel()
-
         print("Published the msg")
 
             
-    def configure_tile(self, key, config):
+    def configure_tile(self, key, config, tape_configs):
 
         #list of markers to be added
         marker_list = []
@@ -312,8 +260,30 @@ class GridPublisher(Node):
                 mesh = "tile"
 
                 #cook up tape
-                
-                
+                T_config = tape_configs["T"]
+                for tape_key in T_config.keys():
+                    strip = self.configure_tape_strip(key + "/" + tape_key, config, T_config[tape_key])
+                    marker_list.append(strip)
+
+            case "tile_X":
+                #tile mesh
+                mesh = "tile"
+
+                #cook up tape
+                T_config = tape_configs["X"]
+                for tape_key in T_config.keys():
+                    strip = self.configure_tape_strip(key + "/" + tape_key, config, T_config[tape_key])
+                    marker_list.append(strip)
+
+            case "tile_l":
+                #tile mesh
+                mesh = "tile"
+
+                #cook up tape
+                T_config = tape_configs["l"]
+                for tape_key in T_config.keys():
+                    strip = self.configure_tape_strip(key + "/" + tape_key, config, T_config[tape_key])
+                    marker_list.append(strip)
 
 
             case "tile":                
@@ -322,7 +292,8 @@ class GridPublisher(Node):
             case _:
                 #default to plain tile
                 mesh = "tile"
-                print(f"Unrecognized marker name {config["mesh"]}")
+                attempt = config["mesh"]
+                print(f"Unrecognized marker name {attempt}")
 
 
         #set mesh resource
@@ -333,7 +304,7 @@ class GridPublisher(Node):
 
         return marker_list
     
-    def configure_tape_strip(self, tile_config, tape_config):
+    def configure_tape_strip(self, key, tile_config, tape_config):
         #fill out marker header
         marker = Marker()
         marker.header.frame_id = self.config_file["top"]["map_frame"]
@@ -348,17 +319,20 @@ class GridPublisher(Node):
         tile_orientation = euler2quat(tile_config["pose"][3], tile_config["pose"][4], tile_config["pose"][5])
 
         #tile_rotm
-        tile_rotm = quat2rotm(tile_orientation)
-
+        tile_rotm = quat2mat(tile_orientation)
+        
+        #rotated tile_pose
+        adjusted_pose = numpy.matmul(tile_rotm, [tape_config["pose"][0], tape_config["pose"][1], tape_config["pose"][2]])
 
         #fill out pose fto_msg(self)or marker
         pose = Pose()
-        pose.position.x = tape_config["pose"][0] + tile_config[["pose"][0]]
-        pose.position.y = tape_config["pose"][1] + tile_config[["pose"][0]]
-        pose.position.z = tape_config["pose"][2] + tile_config[["pose"][0]]
+        pose.position.x = tile_config["pose"][0] + adjusted_pose[0]
+        pose.position.y = tile_config["pose"][1] + adjusted_pose[1]
+        pose.position.z = tile_config["pose"][2] + adjusted_pose[2]
 
         #get rotation in the form of quaternion
         orientation = euler2quat(tape_config["pose"][3], tape_config["pose"][4], tape_config["pose"][5])
+        orientation = qmult(tile_orientation, orientation)
 
         pose.orientation.x = orientation[1]
         pose.orientation.y = orientation[2]
@@ -367,9 +341,9 @@ class GridPublisher(Node):
 
         #fill out scale for marker
         scale = Vector3()
-        scale.x = config["scale"][0]
-        scale.y = config["scale"][1]
-        scale.z = config["scale"][2]
+        scale.x = tile_config["scale"][0] * tape_config["scale"][0]
+        scale.y = tile_config["scale"][1] * tape_config["scale"][1]
+        scale.z = tile_config["scale"][2] * tape_config["scale"][2]
 
         #color
         color = ColorRGBA()
@@ -391,6 +365,55 @@ class GridPublisher(Node):
         #set mesh resource
         marker.mesh_resource = "file://" + os.path.join(get_package_share_directory(self.mesh_pkg), self.mesh_folder, tape_config["mesh"], "model.ply")
         marker.mesh_use_embedded_materials = False
+
+        return marker
+    
+    def configure_destination(self, key, config, color):
+        marker = Marker()
+        marker.header.frame_id = self.config_file["top"]["map_frame"]
+        marker.header.stamp = rclpy.time.Time().to_msg()
+        marker.ns = key
+        marker.id = 3
+        marker.type = 2
+        marker.action = 0
+        marker.frame_locked = True
+
+        #fill out pose fto_msg(self)or marker
+        pose = Pose()
+        pose.position.x = config["pose"][0]
+        pose.position.y = config["pose"][1]
+        pose.position.z = config["pose"][2] 
+        
+        #get rotation in the form of quaternion
+        orientation = euler2quat(config["pose"][3], config["pose"][4], config["pose"][5])
+
+        pose.orientation.x = orientation[1]
+        pose.orientation.y = orientation[2]
+        pose.orientation.z = orientation[3]
+        pose.orientation.w = orientation[0]
+
+        #fill out scale for marker
+        scale = Vector3()
+        scale.x = config["scale"][0]
+        scale.y = config["scale"][1]
+        scale.z = config["scale"][2]
+
+        #color
+        color = ColorRGBA()
+        color.r = color["color"][0]
+        color.b = color["color"][1]
+        color.g = color["color"][2]
+        color.a = color["color"][3]
+
+        #duration
+        duration = Duration().to_msg()
+        duration.nanosec = 0
+        duration.sec = 0
+
+        marker.pose = pose
+        marker.scale = scale
+        marker.color = color
+        marker.lifetime = duration
 
         return marker
 
