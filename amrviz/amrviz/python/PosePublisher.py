@@ -30,7 +30,6 @@ class GridPublisher(Node):
         #publishers
         self.layout_pub = self.create_publisher(MarkerArray, "layout_array", rclpy.qos.qos_profile_system_default)
         self.robot_pub = self.create_publisher(MarkerArray, "robot_array", rclpy.qos.qos_profile_system_default)
-        self.
         
         #timers
         self.marker_pub_cb_timer = self.create_timer(2.0, self.MarkerPublishCallback)
