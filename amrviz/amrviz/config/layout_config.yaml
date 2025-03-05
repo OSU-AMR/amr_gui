@@ -1,5 +1,11 @@
 top:
   map_frame: "map"
+  helpers:
+    frame:      
+      mesh: "frame"
+      color: [1.0, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 1.5707]
+      scale: [0.1, 0.1, 0.1]
   tiles:
     tile0:
       mesh: "tile_l"

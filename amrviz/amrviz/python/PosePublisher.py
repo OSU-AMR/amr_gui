@@ -95,9 +95,17 @@ class GridPublisher(Node):
                 markers.append(marker)
                 print("added")
  
+        
         msg = MarkerArray()
-        msg.markers = markers
 
+        #helper objects
+        helpers = self.config_file["top"]["helpers"]
+        for helper_key in helpers:
+            helper_config = self.config_file["top"]["helpers"][helper_key]
+            marker = self.configure_helpers(helper_config, helper_key)
+            markers.append(marker)
+
+        msg.markers = markers
 
         self.layout_pub.publish(msg)
 
@@ -105,6 +113,60 @@ class GridPublisher(Node):
         self.marker_pub_cb_timer.cancel()
 
         print("Published the msg")
+
+    def configure_helpers(self, config, key):
+        #fill out marker header
+        marker = Marker()
+        marker.header.frame_id = self.config_file["top"]["map_frame"]
+        marker.header.stamp = rclpy.time.Time().to_msg()
+        marker.ns = key
+        marker.id = 3
+        marker.type = 10
+        marker.action = 0
+        marker.frame_locked = True
+
+        #fill out pose fto_msg(self)or marker
+        pose = Pose()
+        pose.position.x = config["pose"][0]
+        pose.position.y = config["pose"][1]
+        pose.position.z = config["pose"][2]
+
+        #get rotation in the form of quaternion
+        orientation = euler2quat(config["pose"][3], config["pose"][4], config["pose"][5])
+
+        pose.orientation.x = orientation[1]
+        pose.orientation.y = orientation[2]
+        pose.orientation.z = orientation[3]
+        pose.orientation.w = orientation[0]
+
+        #fill out scale for marker
+        scale = Vector3()
+        scale.x = config["scale"][0]
+        scale.y = config["scale"][1]
+        scale.z = config["scale"][2]
+
+        #color
+        color = ColorRGBA()
+        color.r = config["color"][0]
+        color.b = config["color"][1]
+        color.g = config["color"][2]
+        color.a = config["color"][3]
+
+        #duration
+        duration = Duration().to_msg()
+        duration.nanosec = 0
+        duration.sec = 0
+
+        marker.pose = pose
+        marker.scale = scale
+        marker.color = color
+        marker.lifetime = duration
+
+        mesh = config["mesh"]
+        marker.mesh_resource = "file://" + os.path.join(get_package_share_directory(self.mesh_pkg), self.mesh_folder, mesh, "model.dae")
+        marker.mesh_use_embedded_materials = False
+
+        return marker
 
     def updateRobotStatus(self):
         current_time = self.get_clock().now().nanoseconds
