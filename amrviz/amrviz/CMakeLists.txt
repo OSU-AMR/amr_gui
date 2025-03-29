@@ -15,19 +15,13 @@ find_package(tinyxml2_vendor REQUIRED)
 
 # find message deps
 find_package(nav_msgs REQUIRED)
-find_package(launch_msgs REQUIRED)
-find_package(riptide_msgs2 REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
-find_package(chameleon_tf_msgs REQUIRED)
 find_package(interactive_markers REQUIRED)
-find_package(riptide_meshes REQUIRED)
 find_package(amr_meshes REQUIRED)
 find_package(amr_msgs REQUIRED)
-
-find_package(zed_interfaces QUIET) #not required because we will handle it if we cant find this. Its only installed on certain computers
 
 # rviz specific deps
 find_package(rviz_common REQUIRED)
@@ -75,13 +69,6 @@ add_library(${PROJECT_NAME} SHARED
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE ROBOT_NS="talos")
 
-# TODO: Maybe make bringup_recipe it's own library?
-add_executable(recipe_parser_test tests/recipe_parser_tests.cpp src/bringup_recipe.cpp)
-
-target_include_directories(recipe_parser_test PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/riptide_rviz>
-  $<INSTALL_INTERFACE:include>)
-
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 # Causes the visibility macros to use dllexport rather than dllimport,
@@ -101,29 +88,15 @@ set(deps
   tf2
   rviz_common 
   rviz_rendering 
-  riptide_msgs2
   tf2_geometry_msgs
   geometry_msgs
   std_msgs
   std_srvs
   nav_msgs
-  launch_msgs
   diagnostic_msgs
-  chameleon_tf_msgs
   interactive_markers
-  riptide_meshes
   amr_msgs
 )
-
-if(zed_interfaces_FOUND)
-  set(deps
-    ${deps}
-    zed_interfaces
-  )
-  
-  target_compile_definitions(${PROJECT_NAME} PUBLIC
-    USE_ZED_INTERFACES)
-endif()
 
 ament_target_dependencies(${PROJECT_NAME} 
   ${deps}
@@ -135,14 +108,6 @@ target_link_libraries(${PROJECT_NAME}
   rviz_ogre_vendor::OgreMain
   rviz_ogre_vendor::OgreOverlay
   tinyxml2
-)
-
-target_link_libraries(recipe_parser_test
-  tinyxml2
-)
-
-ament_target_dependencies(recipe_parser_test
-  ament_index_cpp
 )
 
 # Export old-style CMake variables
@@ -177,16 +142,6 @@ install(
   DIRECTORY include/
   DESTINATION include/${PROJECT_NAME}
 )
-
-install(DIRECTORY launch recipes
-  DESTINATION share/${PROJECT_NAME})
-
-install(DIRECTORY tests/recipes
-  DESTINATION share/${PROJECT_NAME}/tests)
-
-install(TARGETS recipe_parser_test
-  DESTINATION lib/${PROJECT_NAME}
-)
   
 install(
   DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/icons"
@@ -196,6 +151,11 @@ install(
 install(
   DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/config"
   DESTINATION "share/${PROJECT_NAME}"
+)
+
+#Install launch files
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
 )
 
 ament_export_libraries(${PROJECT_NAME})
