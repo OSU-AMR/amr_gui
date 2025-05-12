@@ -56,7 +56,12 @@
     </class>
     <class name="amrviz/Sensors" type="amrviz::Sensors" base_class_type="rviz_common::Panel">
         <description>
-            RVIZ plugin for commanding robot electronics
+            RVIZ plugin for AMR sensors
+        </description>
+    </class>
+    <class name="amrviz/Template" type="amrviz::Template" base_class_type="rviz_common::Panel">
+        <description>
+            AMR RVIZ plugin Template
         </description>
     </class>
 </library>
