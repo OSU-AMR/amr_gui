@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <vector>
 
-
 #define HEARTBEAT_STRING "heartbeat"
 #define LEFT_IR_TOPIC "/state/ir/left"
 #define RIGHT_IR_TOPIC "/state/ir/right"

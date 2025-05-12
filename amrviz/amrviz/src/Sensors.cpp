@@ -41,6 +41,11 @@ namespace amrviz
 
         RVIZ_COMMON_LOG_INFO("Sensor Panel: Inited sensor panel");
 
+        //declare the focused robot parameter
+        try{
+            //may error if declared by another panel and thats ok
+            node->declare_parameter("focus_robot", "");
+        } catch(...){}
     }
 
 
@@ -53,6 +58,10 @@ namespace amrviz
         auto node = getDisplayContext()->getRosNodeAbstraction().lock()->get_raw_node();
 
         std::string selected_robot = get_current_robot();
+
+        if(uiPanel->focus_box->isChecked()){
+            node->get_parameter("focus_robot", selected_robot);
+        }
 
         if(selected_robot != ""){
             //update the ros2 publishers
@@ -102,6 +111,15 @@ namespace amrviz
         //get the previous item
         std::string previous_selected_robot = get_current_robot();
 
+        //detect if user focus robot
+        if(uiPanel->focus_box->isChecked()){
+            std::string focus_robot;
+            node->get_parameter("focus_robot", focus_robot);
+
+            if(get_current_robot() != focus_robot){
+                node->set_parameter(rclcpp::Parameter("focus_robot", get_current_robot()));
+            }
+        }
 
         //sort by namespace
         auto topic_names_and_types = node->get_topic_names_and_types();
