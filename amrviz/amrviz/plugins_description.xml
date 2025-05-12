@@ -54,4 +54,9 @@
             RVIZ plugin for commanding robot electronics
         </description>
     </class>
+    <class name="amrviz/Sensors" type="amrviz::Sensors" base_class_type="rviz_common::Panel">
+        <description>
+            RVIZ plugin for commanding robot electronics
+        </description>
+    </class>
 </library>
