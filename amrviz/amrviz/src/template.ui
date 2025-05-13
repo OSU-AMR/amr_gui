@@ -26,6 +26,31 @@
      <item>
       <widget class="QComboBox" name="robot_select_block"/>
      </item>
+     <item>
+      <widget class="QCheckBox" name="focus_box">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Focused</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

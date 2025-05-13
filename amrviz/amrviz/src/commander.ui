@@ -26,6 +26,13 @@
      <item>
       <widget class="QComboBox" name="robot_select_block"/>
      </item>
+     <item>
+      <widget class="QCheckBox" name="focus_box">
+       <property name="text">
+        <string>Focused</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
