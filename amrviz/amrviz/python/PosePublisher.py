@@ -93,8 +93,18 @@ class GridPublisher(Node):
 
             for marker in tile_markers:
                 markers.append(marker)
-                print("added")
  
+        tags = self.config_file["top"]["tags"]
+
+        for tag_key in tags.keys():
+            #the yaml tile object
+            tag = tags[tag_key]
+
+            tag_markers = self.configure_tile(tag_key, tag, self.config_file["top"]["tape_configurations"])
+
+            for marker in tag_markers:
+                markers.append(marker)
+
         
         msg = MarkerArray()
 
