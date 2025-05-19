@@ -49,7 +49,7 @@
             RVIZ plugin for controlling the map
         </description>
     </class>
-    <class name="riptide_rviz/ElectricalPanel" type="riptide_rviz::ElectricalPanel" base_class_type="rviz_common::Panel">
+    <class name="riptide_rviz/ElectricalPanenol" type="riptide_rviz::ElectricalPanel" base_class_type="rviz_common::Panel">
         <description>
             RVIZ plugin for commanding robot electronics
         </description>
@@ -59,9 +59,17 @@
             RVIZ plugin for AMR sensors
         </description>
     </class>
+    <class name="amrviz/CommanderPanel" type="amrviz::CommanderPanel" base_class_type="rviz_common::Panel">
+        <description>
+            A panel to enable and disable AMRs.
+        </description>
+    </class>
+
+
     <class name="amrviz/Template" type="amrviz::Template" base_class_type="rviz_common::Panel">
         <description>
             AMR RVIZ plugin Template
         </description>
     </class>
+    
 </library>

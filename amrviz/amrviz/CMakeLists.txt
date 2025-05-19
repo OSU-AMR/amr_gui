@@ -31,6 +31,7 @@ find_package(Qt5 COMPONENTS Widgets Core REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(resource_retriever REQUIRED)
 find_package(diagnostic_msgs REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 # Qt5 boilerplate options from http://doc.qt.io/qt-5/cmake-manual.html
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -96,6 +97,7 @@ set(deps
   diagnostic_msgs
   interactive_markers
   amr_msgs
+ 
 )
 
 ament_target_dependencies(${PROJECT_NAME} 
@@ -122,6 +124,7 @@ ament_export_dependencies(
   rviz_ogre_vendor
   resource_retriever
   ament_index_cpp
+  yaml-cpp
 )
 
 install(

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CommanderPanel</class>
+ <widget class="QWidget" name="CommanderPanel">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>426</width>
+    <height>399</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Robot Commander</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainVerticalLayout">
+   <item>
+    <widget class="QGroupBox" name="globalCommandsGroup">
+     <property name="title">
+      <string>Global Commands (All Discovered Robots)</string>
+     </property>
+     <layout class="QHBoxLayout" name="globalCommandsLayout">
+      <item>
+       <widget class="QPushButton" name="enableAllButton">
+        <property name="toolTip">
+         <string>Send enable command to all robots in the list.</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: #26A269; color: white;</string>
+        </property>
+        <property name="text">
+         <string>Enable All Robots</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="disableAllButton">
+        <property name="toolTip">
+         <string>Send disable command to all robots in the list.</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: #E01B24; color: white;</string>
+        </property>
+        <property name="text">
+         <string>Disable All Robots</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="currentRobotControlGroup">
+     <property name="title">
+      <string>Current Robot Control</string>
+     </property>
+     <layout class="QVBoxLayout" name="currentRobotControlLayout">
+      <item>
+       <layout class="QHBoxLayout" name="currentRobotEnableDisableLayout">
+        <item>
+         <widget class="QPushButton" name="enableCurrentButton">
+          <property name="styleSheet">
+           <string notr="true">background-color: #2EC27E; color: white;</string>
+          </property>
+          <property name="text">
+           <string>Enable Selected Robot</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="disableCurrentButton">
+          <property name="styleSheet">
+           <string notr="true">background-color: #E01B24; color: white;</string>
+          </property>
+          <property name="text">
+           <string>Disable Selected Robot</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="separatorLine">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="setStateLayout">
+        <item>
+         <widget class="QLabel" name="label_setState">
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>State</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="stateSelectComboBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777213</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Select a predefined state or type a state code (e.g., 0, 1, 101).</string>
+          </property>
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>16</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="lineEditPlaceholderText" stdset="0">
+           <string>Select or type state...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="setStateButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>2</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Set State</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="currentRobotStatusLabel">
+        <property name="font">
+         <font/>
+        </property>
+        <property name="toolTip">
+         <string>Shows the last commanded state for the selected robot.</string>
+        </property>
+        <property name="text">
+         <string>Status: Unknown</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="robotSelectionGroup">
+     <property name="title">
+      <string>Robot Selection</string>
+     </property>
+     <layout class="QHBoxLayout" name="robotSelectionLayout">
+      <item>
+       <widget class="QLabel" name="label_robot_select">
+        <property name="text">
+         <string>Robot:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="robot_select_block"/>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="focus_box">
+        <property name="text">
+         <string>Focused</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
