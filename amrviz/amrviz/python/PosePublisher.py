@@ -356,6 +356,15 @@ class GridPublisher(Node):
                     strip = self.configure_tape_strip(key + "/" + tape_key, config, T_config[tape_key])
                     marker_list.append(strip)
 
+            case "tile_r":
+                #tile mesh
+                mesh = "tile"
+
+                #cook up tape
+                T_config = tape_configs["r"]
+                for tape_key in T_config.keys():
+                    strip = self.configure_tape_strip(key + "/" + tape_key, config, T_config[tape_key])
+                    marker_list.append(strip)
 
             case "tile":                
                 mesh = "tile"
