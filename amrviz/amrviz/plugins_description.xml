@@ -66,7 +66,7 @@
     </class>
 
 
-    <class name="amrviz/Template" type="amrviz::Template" base_class_type="rviz_common::Panel">
+   <class name="amrviz/Template" type="amrviz::Template" base_class_type="rviz_common::Panel">
         <description>
             AMR RVIZ plugin Template
         </description>

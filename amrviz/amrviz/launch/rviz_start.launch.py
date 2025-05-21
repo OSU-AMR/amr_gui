@@ -51,6 +51,15 @@ def generate_launch_description():
                 # send the rest into the robot namespace
                 PushRosNamespace(["/",  "central"]),
                 
+                
+                Node(
+                    package="amrviz",
+                    executable="PosePublisher.py",
+                    name="gridpublisher",
+                    output="screen",
+                    parameters = [
+                    ]
+                )
             ]
         )
     ])

@@ -28,6 +28,18 @@
      </item>
      <item>
       <widget class="QCheckBox" name="focus_box">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
         <string>Focused</string>
        </property>

@@ -8,9 +8,8 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QVariant>
-#include <std_msgs/msg/string.hpp>
 #include <std_msgs/msg/u_int8.hpp>
-#include "ui_CommanderPanel.h"
+#include "ui_CommanderPanel.h" // Assuming this is correctly generated
 #include <string>
 #include <vector>
 #include <unordered_set>
@@ -18,18 +17,16 @@
 #include <optional>
 
 #include <yaml-cpp/yaml.h>
+#include <amr_msgs/srv/state_change_request.hpp> // Re-added for the service client
 
 #define HEARTBEAT_STRING "heartbeat"
-#define ROBOT_KILL_STATE_TOPIC_SUFFIX "/set_kill_state"
-#define ROBOT_GENERAL_STATE_COMMAND_TOPIC_SUFFIX "/set_general_state_cmd"
-
-#define PANEL_SELECTED_ROBOT_KILL_STATE_TOPIC "/commander_panel/selected_robot_kill_state"
-#define PANEL_SELECTED_ROBOT_GENERAL_STATE_TOPIC "/commander_panel/selected_robot_general_state"
+#define ROBOT_STATE_CHANGE_SERVICE_SUFFIX "/request_state_change" // Will be used for the Set State button
 
 #define STATE_ERROR_UNKNOWN 255
 #define STATE_CONTINUOUS_NONE 255
 
-namespace amrviz {
+namespace amrviz
+{
 
 struct RobotStateInfo {
     std::string display_name;
@@ -48,19 +45,19 @@ public:
     void save(rviz_common::Config config) const override;
     void onInitialize() override;
 
-    void refresh_robot_list();
-
 public Q_SLOTS:
-    void onEnableCurrentButtonToggled(bool checked);
-    void onDisableCurrentButtonToggled(bool checked);
-    // Slots for "All" buttons are for simple clicks, not toggles
+    void refresh_robot_list();
+    void onEnableCurrentButtonClicked();
+    void onDisableCurrentButtonClicked();
     void onEnableAllButtonClicked();
     void onDisableAllButtonClicked();
-    void onSetStateButtonClicked();
+    void onSetStateButtonClicked(); // This will use a service client
     void onRobotSelectionChanged(int index);
     void onFocusCheckBoxToggled(bool checked);
 
 private:
+    void publish_kill_states();
+
     bool loadStatesFromYaml(const std::string& yaml_file_path);
     std::optional<uint8_t> getStateIdByYamlKey(const std::string& yaml_key) const;
 
@@ -71,28 +68,17 @@ private:
     rclcpp::Node::SharedPtr getNode();
     std::vector<std::string> getLiveRobotNamesFromHeartbeats();
 
-    // Simplified: no longer needs is_all_command_scope, only for "Current" buttons
-    void handleCheckableButtonPair(QPushButton* button_just_toggled, bool is_checked,
-                                   QPushButton* other_button_in_pair,
-                                   uint8_t command_if_button_checked);
-
-    void sendDirectKillUnKillCommand(const std::string& robot_name, uint8_t command_id);
-    void sendDirectGeneralCommand(const std::string& robot_name, uint8_t command_id);
+    // This specific method for general commands via service is reinstated in principle
+    // void sendDirectGeneralCommandViaService(const std::string& robot_name, uint8_t command_id); // Example name
 
     std::map<std::string, uint8_t> robot_commanded_generic_state_;
     std::map<std::string, uint8_t> robot_last_kill_unkill_cmd_;
     std::vector<RobotStateInfo> available_states_;
-    std::map<std::string, rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr> robot_direct_kill_state_publishers_;
 
-    rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr selected_robot_kill_state_1hz_publisher_;
-    rclcpp::TimerBase::SharedPtr selected_robot_kill_state_1hz_timer_;
-    std::optional<uint8_t> active_kill_unkill_for_selected_robot_1hz_;
-    void publishActiveSelectedRobotKillState();
-
-    rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr selected_robot_general_state_1hz_publisher_;
-    rclcpp::TimerBase::SharedPtr selected_robot_general_state_1hz_timer_;
-    std::optional<uint8_t> active_general_cmd_for_selected_robot_1hz_;
-    void publishActiveSelectedRobotGeneralState();
+    std::map<std::string, rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr> robot_kill_state_publishers_;
+    std::map<std::string, uint8_t> robot_desired_kill_states_;
+    rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr selected_robot_command_publisher_; // For enable/disable current
+    rclcpp::TimerBase::SharedPtr kill_state_publish_timer_;
 
 public:
     Ui_CommanderPanel *uiPanel;

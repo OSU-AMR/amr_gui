@@ -93,8 +93,18 @@ class GridPublisher(Node):
 
             for marker in tile_markers:
                 markers.append(marker)
-                print("added")
  
+        tags = self.config_file["top"]["tags"]
+
+        for tag_key in tags.keys():
+            #the yaml tile object
+            tag = tags[tag_key]
+
+            tag_markers = self.configure_tile(tag_key, tag, self.config_file["top"]["tape_configurations"])
+
+            for marker in tag_markers:
+                markers.append(marker)
+
         
         msg = MarkerArray()
 
@@ -346,6 +356,15 @@ class GridPublisher(Node):
                     strip = self.configure_tape_strip(key + "/" + tape_key, config, T_config[tape_key])
                     marker_list.append(strip)
 
+            case "tile_r":
+                #tile mesh
+                mesh = "tile"
+
+                #cook up tape
+                T_config = tape_configs["r"]
+                for tape_key in T_config.keys():
+                    strip = self.configure_tape_strip(key + "/" + tape_key, config, T_config[tape_key])
+                    marker_list.append(strip)
 
             case "tile":                
                 mesh = "tile"

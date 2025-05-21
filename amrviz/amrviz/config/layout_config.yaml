@@ -4,7 +4,7 @@ top:
     frame:      
       mesh: "frame"
       color: [1.0, 1.0, 1.0, 1.0]
-      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 1.5707]
+      pose: [-0.5, 0.0, 0.0, 0.0, 0.0, 3.1415]
       scale: [0.1, 0.1, 0.1]
   tiles:
     tile0:
@@ -56,6 +56,17 @@ top:
         color: [0.2, 0.2, 0.2, 1.0]
         pose: [0.0, 0.0, 0.007, 0.0, 0.0, 0.0]
         scale: [1.0, 1.0, 1.0]
+    r:
+      strip1:
+        mesh: "tape"
+        color: [0.2, 0.2, 0.2, 1.0]
+        pose: [-0.07595, 0.0, 0.008, 0.0, 0.0, 0.0]
+        scale: [0.5, 1.0, 1.0]
+      strip2:
+        mesh: "tape"
+        color: [0.2, 0.2, 0.2, 1.0]
+        pose: [0.0, -0.07595, 0.008, 0.0, 0.0, 1.5707]
+        scale: [0.5, 1.0, 1.0]
   desitnations:
     dest_1:
       pose: [0.0, 0.0, 0.007, 0.0, 0.0, 0.0]
@@ -63,52 +74,52 @@ top:
   robots:
     robot0:
       frame: "robot0_base"
-      mesh: "talos"
-      color: [1.0, 1.0, 1.0, 1.0]
-      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-      scale: [0.5, 0.5, 0.5]
+      mesh: "amr"
+      color: [0.8, 1.0, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
+      scale: [0.8, 0.8, 0.8]
     robot1:
       frame: "robot1_base"
-      mesh: "talos"
-      color: [1.0, 1.0, 1.0, 1.0]
-      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-      scale: [0.5, 0.5, 0.5]
+      mesh: "amr"
+      color: [1.0, 0.8, 1.0, 1.0]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
+      scale: [0.8, 0.8, 0.8]
     robot2:
       frame: "robot3_base"
-      mesh: "talos"
+      mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
-      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-      scale: [0.5, 0.5, 0.5]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
+      scale: [0.8, 0.8, 0.8]
     robot3:
       frame: "robot4_base"
-      mesh: "talos"
+      mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
-      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-      scale: [0.5, 0.5, 0.5]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
+      scale: [0.8, 0.8, 0.8]
     robot4:
       frame: "robot5_base"
-      mesh: "talos"
+      mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
-      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-      scale: [0.5, 0.5, 0.5]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
+      scale: [0.8, 0.8, 0.8]
     robot5:
       frame: "robot6_base"
-      mesh: "talos"
+      mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
-      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-      scale: [0.5, 0.5, 0.5]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
+      scale: [0.8, 0.8, 0.8]
     robot6:
-      frame: "robot1_base"
-      mesh: "talos"
+      frame: "robot2_base"
+      mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
-      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-      scale: [0.5, 0.5, 0.5]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
+      scale: [0.8, 0.8, 0.8]
     robotdummy:
       frame: "robotdummy_base"
-      mesh: "talos"
+      mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
-      pose: [0.0, 0.0, 0.0, 0.0, 0.0, 1.57]
-      scale: [0.5, 0.5, 0.5]
+      pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
+      scale: [0.8, 0.8, 0.8]
 
 
 
