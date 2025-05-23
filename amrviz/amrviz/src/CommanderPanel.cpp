@@ -19,14 +19,14 @@ using namespace std::placeholders;
 
 namespace amrviz
 {
-
+//This is what connects the buttons to the UI and vice versa.
 CommanderPanel::CommanderPanel(QWidget *parent) : rviz_common::Panel(parent)
 {
     setFocusPolicy(Qt::ClickFocus);
     uiPanel = new Ui_CommanderPanel();
     uiPanel->setupUi(this);
 
-    // Connections for the buttons on UI
+    // Connections remain mostly the same
     if (uiPanel->enableCurrentButton) {
         connect(uiPanel->enableCurrentButton, &QPushButton::clicked, this, &CommanderPanel::onEnableCurrentButtonClicked);
     } else { RVIZ_COMMON_LOG_ERROR("CmdPanel: enableCurrentButton is null."); }
@@ -58,13 +58,13 @@ CommanderPanel::CommanderPanel(QWidget *parent) : rviz_common::Panel(parent)
 
     RVIZ_COMMON_LOG_INFO("CommanderPanel: Constructed panel.");
 }
-
+//Deletes Panel 
 CommanderPanel::~CommanderPanel()
 {
     delete uiPanel;
 }
 
-
+//This splits up the YAML file into readable C++ stuff
 void parseStatesInCategory(const YAML::Node& category_node, const std::string& category_name, std::vector<RobotStateInfo>& states_vector, rclcpp::Logger logger) {
     if (!category_node || !category_node.IsMap()) { 
         RCLCPP_WARN(logger, "Category '%s' is not valid in YAML or does not exist.", category_name.c_str()); 
@@ -77,12 +77,14 @@ void parseStatesInCategory(const YAML::Node& category_node, const std::string& c
             uint8_t id = details["id"].as<uint8_t>(); std::string d_name = key;
             std::replace(d_name.begin(), d_name.end(), '_', ' ');
             if(!d_name.empty()) d_name[0] = toupper(d_name[0]);
-            for(size_t i = 1; i < d_name.length(); ++i) if(d_name[i-1] == ' ') d_name[i] = toupper(d_name[i]);
+            for(size_t i = 1; i < d_name.length(); ++i) 
+            if(d_name[i-1] == ' ') d_name[i] = toupper(d_name[i]);
             states_vector.push_back({d_name + " (" + std::to_string(id) + ")", id, key});
         } catch (const YAML::Exception& e) { RCLCPP_ERROR(logger, "YAML parse error for state '%s': %s", key.c_str(), e.what()); }
     }
 }
 
+//Used to Load in the States from YAml File
 bool CommanderPanel::loadStatesFromYaml(const std::string& yaml_path) { 
     auto node = getNode(); if (!node) return false; rclcpp::Logger logger = node->get_logger();
     RCLCPP_INFO(logger, "Loading states from YAML: %s", yaml_path.c_str());
@@ -110,17 +112,21 @@ bool CommanderPanel::loadStatesFromYaml(const std::string& yaml_path) {
     }
     return true;
 }
-
+//Gathers State ID from Yaml Key
 std::optional<uint8_t> CommanderPanel::getStateIdByYamlKey(const std::string& yaml_key) const { 
-    for (const auto& state_info : available_states_) { if (state_info.yaml_key == yaml_key) return state_info.id; } 
+    for (const auto& state_info : available_states_) 
+    { if (state_info.yaml_key == yaml_key) 
+        return state_info.id; } 
     RVIZ_COMMON_LOG_WARNING_STREAM("CmdPanel: State YAML key '" << yaml_key << "' not found."); 
     return std::nullopt; 
 }
 
-
+//Starts the whole thing, path for Yaml , set state box and focus box 
 void CommanderPanel::onInitialize() {
-    auto node = getNode(); if (!node) { RVIZ_COMMON_LOG_ERROR("CmdPanel: Failed to get ROS node."); return; }
-    std::string yaml_path_param = "/home/cesar/AMR/src/amr_central/config/command_list.yaml"; 
+    auto node = getNode(); 
+    if (!node) { RVIZ_COMMON_LOG_ERROR("CmdPanel: Failed to get ROS node."); 
+        return; }
+    std::string yaml_path_param = "/home/cesar/AMR/src/amr_central/config/command_list.yaml"; ////YAMLLLLL FILE LOCATION
     try { yaml_path_param = node->declare_parameter<std::string>("robot_states_yaml_path", yaml_path_param); } 
     catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) { node->get_parameter("robot_states_yaml_path", yaml_path_param); }
     
@@ -136,16 +142,18 @@ void CommanderPanel::onInitialize() {
     catch (const std::exception& e) {RVIZ_COMMON_LOG_ERROR_STREAM("CmdPanel: focus_robot param error: " << e.what());}
 
     robot_list_timer = node->create_wall_timer(1s, std::bind(&CommanderPanel::refresh_robot_list, this));
-    // kill_state_publish_timer_ = node->create_wall_timer(1s, std::bind(&CommanderPanel::publish_kill_states, this)); // May become obsolete
-
+    
     RVIZ_COMMON_LOG_INFO("CommanderPanel: Initialized.");
 }
 
 rclcpp::Node::SharedPtr CommanderPanel::getNode() { 
-    auto ctx = getDisplayContext(); if (!ctx) return nullptr;
+    auto ctx = getDisplayContext(); 
+    if (!ctx) 
+    return nullptr;
     auto abs_node = ctx->getRosNodeAbstraction().lock(); return abs_node ? abs_node->get_raw_node() : nullptr;
 }
 
+//This does as it states detects all robots with Heartbeat
 std::vector<std::string> CommanderPanel::getLiveRobotNamesFromHeartbeats() { 
     auto node = getNode(); if (!node) return {}; std::vector<std::string> live_robots;
     auto topics = node->get_topic_names_and_types();
@@ -159,6 +167,7 @@ std::vector<std::string> CommanderPanel::getLiveRobotNamesFromHeartbeats() {
     removeDuplicateStrings(live_robots); return live_robots;
 }
 
+//Updates the heartbeat list 
 void CommanderPanel::refresh_robot_list() {
     auto node = getNode(); if (!node) return;
     std::string current_ui_selection = get_current_robot();
@@ -170,9 +179,11 @@ void CommanderPanel::refresh_robot_list() {
     }
     std::vector<std::string> live_robots = getLiveRobotNamesFromHeartbeats();
     
-    
+ 
     std::optional<uint8_t> unkilled_id = getStateIdByYamlKey("unkilled");
-    uint8_t initial_kill_state = unkilled_id.value_or(STATE_ERROR_UNKNOWN); // Or a dedicated "unknown" if not unkilled
+    uint8_t initial_kill_state = unkilled_id.value_or(STATE_ERROR_UNKNOWN); 
+
+    
     
     if (uiPanel->robot_select_block) {
         std::vector<std::string> current_dropdown_items;
@@ -198,13 +209,15 @@ void CommanderPanel::refresh_robot_list() {
     handleUiAfterRobotSelectionChange(); 
 }
 
+
+//Logic for drop down menu for robots.
 void CommanderPanel::onRobotSelectionChanged(int index) {
     (void)index; auto node = getNode(); if(!node) return; 
     std::string newly_selected_robot = get_current_robot(); 
     RVIZ_COMMON_LOG_INFO_STREAM("CmdPanel: UI Robot selection changed to: " << newly_selected_robot); 
 
     actual_robot_state_id_ = std::nullopt; // Reset actual state when robot changes
-    current_robot_actual_state_sub_.reset(); // Reset (unsubscribe) from old robot's status
+    current_robot_actual_state_sub_.reset(); // Reset  from old robot's status
 
     if (!newly_selected_robot.empty()) {
         // Setup subscriber for the new robot's actual state
@@ -236,7 +249,7 @@ void CommanderPanel::onRobotSelectionChanged(int index) {
     handleUiAfterRobotSelectionChange(); 
 }
 
-
+//This makes sure that the State is displayed correctly and teh same as in action server 
 void CommanderPanel::actual_state_callback(const std_msgs::msg::UInt8::SharedPtr msg) {
     std::string current_robot_in_dropdown = get_current_robot();
     
@@ -247,7 +260,7 @@ void CommanderPanel::actual_state_callback(const std_msgs::msg::UInt8::SharedPtr
     }
 }
 
-
+//Focus button
 void CommanderPanel::onFocusCheckBoxToggled(bool checked) {
     RVIZ_COMMON_LOG_INFO_STREAM("CmdPanel: Focus checkbox toggled to: " << (checked ? "ON" : "OFF")); 
     refresh_robot_list();  
@@ -256,9 +269,10 @@ void CommanderPanel::onFocusCheckBoxToggled(bool checked) {
 void CommanderPanel::handleUiAfterRobotSelectionChange() {
     std::string current_robot = get_current_robot(); 
     updateButtonAndStatusUI(current_robot); 
-    updateStatusLabel(current_robot); 
+    updateStatusLabel(current_robot); /
 }
 
+// Helper function for sending state change requests
 void CommanderPanel::sendStateChangeRequest(const std::string& robot_name, uint8_t state_id, const std::string& context_prefix) {
     if (robot_name.empty()) {
         QMessageBox::warning(this, "No Robot Selected", "Please select a robot first.");
@@ -280,6 +294,13 @@ void CommanderPanel::sendStateChangeRequest(const std::string& robot_name, uint8
         return;
     }
     
+    // Optional: Add a timeout for waiting for the service
+    // if (!client->wait_for_service(std::chrono::seconds(1))) { // Short timeout for GUI
+    //     RVIZ_COMMON_LOG_WARNING_STREAM("CmdPanel: Service " << service_name << " not available.");
+    //     QMessageBox::warning(this, "Service Error", QString("Service %1 not available.").arg(QString::fromStdString(service_name)));
+    //     return;
+    // }
+
 
     auto request = std::make_shared<amr_msgs::srv::StateChangeRequest::Request>();
     request->requested_states = {state_id};
@@ -413,9 +434,10 @@ void CommanderPanel::updateButtonAndStatusUI(const std::string& robot_name) {
     if(uiPanel->disableCurrentButton) uiPanel->disableCurrentButton->setEnabled(robot_selected);
     if(uiPanel->setStateButton) uiPanel->setStateButton->setEnabled(robot_selected);
     if(uiPanel->stateSelectComboBox) uiPanel->stateSelectComboBox->setEnabled(robot_selected);
-    
+    // The status label is now updated primarily by updateStatusLabel, which considers actual_robot_state_id_
 }
 
+// Modified to prioritize actual_robot_state_id_
 void CommanderPanel::updateStatusLabel(const std::string& robot_name_arg) { 
     if (!uiPanel->currentRobotStatusLabel) return; 
 
@@ -496,9 +518,7 @@ void CommanderPanel::setComboBoxItems(QComboBox* comboBox, const std::vector<std
             }
         }
     }
-    // If desired_selection was not found among items, but it's not empty, it means it disappeared.
-    // In this case, if items are available, default to the first actual item.
-    // If items are empty, selection_idx remains 0 (the blank item).
+    
     if (selection_idx == 0 && !desired_selection.empty() && !items.empty()) {
         bool desired_is_still_live = false;
         for(const auto& item : items) if(item == desired_selection) desired_is_still_live = true;
@@ -527,16 +547,12 @@ std::string CommanderPanel::get_current_robot() {
 }
 
 
-
 void CommanderPanel::load(const rviz_common::Config &config) { 
    rviz_common::Panel::load(config); int count = 0; 
    config.mapGetInt("RobotGenericStateCount", &count);  
    if (count > 0) { robot_commanded_generic_state_.clear();  
        for (int i=0; i<count; ++i) { QString n; int s=0; if (config.mapGetString(QString("RGS_N%1").arg(i),&n) && config.mapGetInt(QString("RGS_S%1").arg(i),&s)) robot_commanded_generic_state_[n.toStdString()] = (uint8_t)s;}} 
-   // Example of how to load if robot_last_kill_unkill_cmd_ was still separate
-   // config.mapGetInt("RobotKillStateCount", &count); 
-   // if (count > 0) { robot_last_kill_unkill_cmd_.clear(); 
-   //     for (int i=0; i<count; ++i) { QString n; int s=0; if (config.mapGetString(QString("RKS_N%1").arg(i),&n) && config.mapGetInt(QString("RKS_S%1").arg(i),&s)) robot_last_kill_unkill_cmd_[n.toStdString()] = (uint8_t)s;}} 
+
    QTimer::singleShot(200, this, [this](){ this->refresh_robot_list(); }); 
 }
 
@@ -544,7 +560,8 @@ void CommanderPanel::save(rviz_common::Config config) const {
     rviz_common::Panel::save(config); 
     config.mapSetValue("RobotGenericStateCount", (int)robot_commanded_generic_state_.size()); int i=0; 
     for (const auto& p : robot_commanded_generic_state_) { config.mapSetValue(QString("RGS_N%1").arg(i), QString::fromStdString(p.first)); config.mapSetValue(QString("RGS_S%1").arg(i), (int)p.second); i++;} 
-   
+    
+}
 
 
 double CommanderPanel::get_ros2_time() { 
