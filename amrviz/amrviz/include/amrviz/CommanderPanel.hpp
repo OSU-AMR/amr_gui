@@ -9,7 +9,7 @@
 #include <QPushButton>
 #include <QVariant>
 #include <std_msgs/msg/u_int8.hpp>
-#include "ui_CommanderPanel.h" // Assuming this is correctly generated
+#include "ui_CommanderPanel.h" 
 #include <string>
 #include <vector>
 #include <unordered_set>
@@ -17,13 +17,13 @@
 #include <optional>
 
 #include <yaml-cpp/yaml.h>
-#include <amr_msgs/srv/state_change_request.hpp> // Re-added for the service client
+#include <amr_msgs/srv/state_change_request.hpp>
 
 #define HEARTBEAT_STRING "heartbeat"
-#define ROBOT_STATE_CHANGE_SERVICE_SUFFIX "/request_state_change" // Will be used for the Set State button
+#define ROBOT_STATE_CHANGE_SERVICE_SUFFIX "/request_state_change"
 
 #define STATE_ERROR_UNKNOWN 255
-#define STATE_CONTINUOUS_NONE 255
+#define STATE_CONTINUOUS_NONE 255 
 
 namespace amrviz
 {
@@ -51,34 +51,36 @@ public Q_SLOTS:
     void onDisableCurrentButtonClicked();
     void onEnableAllButtonClicked();
     void onDisableAllButtonClicked();
-    void onSetStateButtonClicked(); // This will use a service client
+    void onSetStateButtonClicked();
     void onRobotSelectionChanged(int index);
     void onFocusCheckBoxToggled(bool checked);
 
 private:
-    void publish_kill_states();
-
+    
     bool loadStatesFromYaml(const std::string& yaml_file_path);
     std::optional<uint8_t> getStateIdByYamlKey(const std::string& yaml_key) const;
+    
+    // Helper for making service calls
+    void sendStateChangeRequest(const std::string& robot_name, uint8_t state_id, const std::string& context_prefix);
+
 
     void updateButtonAndStatusUI(const std::string& robot_name);
-    void updateStatusLabel(const std::string& robot_name, uint8_t state_code);
+    void updateStatusLabel(const std::string& robot_name); 
     void handleUiAfterRobotSelectionChange();
 
     rclcpp::Node::SharedPtr getNode();
     std::vector<std::string> getLiveRobotNamesFromHeartbeats();
 
-    // This specific method for general commands via service is reinstated in principle
-    // void sendDirectGeneralCommandViaService(const std::string& robot_name, uint8_t command_id); // Example name
-
-    std::map<std::string, uint8_t> robot_commanded_generic_state_;
-    std::map<std::string, uint8_t> robot_last_kill_unkill_cmd_;
+    std::map<std::string, uint8_t> robot_commanded_generic_state_; // Stores state set by SetState or Enable/Disable
+    
     std::vector<RobotStateInfo> available_states_;
 
-    std::map<std::string, rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr> robot_kill_state_publishers_;
-    std::map<std::string, uint8_t> robot_desired_kill_states_;
-    rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr selected_robot_command_publisher_; // For enable/disable current
-    rclcpp::TimerBase::SharedPtr kill_state_publish_timer_;
+    // New subscriber for actual robot state
+    rclcpp::Subscription<std_msgs::msg::UInt8>::SharedPtr current_robot_actual_state_sub_;
+    void actual_state_callback(const std_msgs::msg::UInt8::SharedPtr msg);
+    std::optional<uint8_t> actual_robot_state_id_;
+    std::string current_subscribed_robot_for_status_;
+
 
 public:
     Ui_CommanderPanel *uiPanel;
