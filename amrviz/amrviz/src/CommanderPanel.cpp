@@ -269,7 +269,7 @@ void CommanderPanel::onFocusCheckBoxToggled(bool checked) {
 void CommanderPanel::handleUiAfterRobotSelectionChange() {
     std::string current_robot = get_current_robot(); 
     updateButtonAndStatusUI(current_robot); 
-    updateStatusLabel(current_robot); /
+    updateStatusLabel(current_robot); // Initial update of status label
 }
 
 // Helper function for sending state change requests
