@@ -39,7 +39,7 @@ class GridPublisher(Node):
         self.robot_pub = self.create_publisher(MarkerArray, "robot_array", rclpy.qos.qos_profile_system_default)
 
         #subscriber
-        self.blocked_edge_subs = self.create_subscription(Int16MultiArray, "blocked_routes", self.update_blocked_routes, qos_profile=rclpy.qos.qos_profile_system_default)
+        self.blocked_edge_subs = self.create_subscription(Int16MultiArray, "blocked_edges", self.update_blocked_routes, qos_profile=rclpy.qos.qos_profile_system_default)
         
         #timers
         self.marker_pub_cb_timer = self.create_timer(2.0, self.MarkerPublishCallback)
@@ -49,6 +49,9 @@ class GridPublisher(Node):
         self.tf_static_broadcaster = StaticTransformBroadcaster(self)        
 
         self.BroadcastGridFrame()   
+
+        #previously blocked paths
+        self.previously_blocked_paths = []
 
         self.mesh_pkg = "amr_meshes"
         self.amrviz_pkg = "amrviz"
@@ -298,7 +301,12 @@ class GridPublisher(Node):
 
         markers = []
 
+        edges_for_removal = self.previously_blocked_paths
+
         for edge in msg.data:
+
+            if(edge in edges_for_removal):
+                edges_for_removal.remove(edge)
 
             #edge string
             str = f"edge_{edge}"
@@ -369,6 +377,28 @@ class GridPublisher(Node):
             marker.mesh_use_embedded_materials = False
 
             markers.append(marker)
+
+        #mark the edges for removal
+        for edge in edges_for_removal:
+
+            #edge string
+            str = f"edge_{edge}"
+
+            edge_data = self.edge_file[str]
+
+            marker = Marker()
+            marker.header.frame_id = self.config_file["top"]["map_frame"]
+            marker.header.stamp = rclpy.time.Time().to_msg()
+            marker.ns = str
+            marker.id = 3
+            marker.type = 10
+            marker.action = 2
+            marker.frame_locked = True
+            
+            markers.append(marker)
+
+
+        self.previously_blocked_paths = msg.data
 
         msg = MarkerArray()
         msg.markers = markers
