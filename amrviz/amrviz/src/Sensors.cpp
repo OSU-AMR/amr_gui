@@ -63,15 +63,19 @@ namespace amrviz
             node->get_parameter("focus_robot", selected_robot);
         }
 
-        if(selected_robot != ""){
+        if(selected_robot != "" && current_robot != selected_robot){
             //update the ros2 publishers
             std::string slash_str = "/";
+            
+
             RFID_sub = node->create_subscription<std_msgs::msg::String>(slash_str + selected_robot + RFID_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::RFID_update_cb, this, _1)); 
             IR_sub_L = node->create_subscription<std_msgs::msg::Float32>(slash_str + selected_robot + LEFT_IR_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::IR_left_update_cb, this, _1)); 
             IR_sub_R = node->create_subscription<std_msgs::msg::Float32>(slash_str + selected_robot + RIGHT_IR_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::IR_right_update_cb, this, _1)); 
             encoder_sub_L = node->create_subscription<std_msgs::msg::Float32>(slash_str + selected_robot + LEFT_ENCODER_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::encoder_left_update_cb, this, _1)); 
             encoder_sub_R = node->create_subscription<std_msgs::msg::Float32>(slash_str + selected_robot + RIGHT_ENCODER_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::encoder_right_update_cb, this, _1)); 
         }    
+
+        current_robot = selected_robot;
 
     }
 

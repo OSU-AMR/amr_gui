@@ -14,7 +14,7 @@ from vision_msgs.msg import Detection3DArray
 from nav_msgs.msg import Odometry
 from rclpy.duration import Duration
 from rclpy.node import Node
-from std_msgs.msg import ColorRGBA
+from std_msgs.msg import ColorRGBA, Int16MultiArray
 from tf2_ros import Buffer, TransformListener, StaticTransformBroadcaster
 from transforms3d.euler import euler2quat, quat2mat
 from transforms3d.quaternions import qmult
@@ -22,14 +22,24 @@ from visualization_msgs.msg import Marker, MarkerArray
 import yaml
 from ros2node.api import get_node_names
 
+TAPE_DEFAULT_LENGTH = .3038
+ROUTE_STATUS_TAPE_HEIGHT = .009
+ROUTE_BLOCKED_COLOR = [1.0, 0.2, 0.2, 1.0]
 
 class GridPublisher(Node):
+
+    edge_file = None
+
     def __init__(self):
         super().__init__("gridpublisher")
 
         #publishers
         self.layout_pub = self.create_publisher(MarkerArray, "layout_array", rclpy.qos.qos_profile_system_default)
+        self.closed_path_pub = self.create_publisher(MarkerArray, "closed_paths", rclpy.qos.qos_profile_system_default)
         self.robot_pub = self.create_publisher(MarkerArray, "robot_array", rclpy.qos.qos_profile_system_default)
+
+        #subscriber
+        self.blocked_edge_subs = self.create_subscription(Int16MultiArray, "blocked_routes", self.update_blocked_routes, qos_profile=rclpy.qos.qos_profile_system_default)
         
         #timers
         self.marker_pub_cb_timer = self.create_timer(2.0, self.MarkerPublishCallback)
@@ -43,11 +53,25 @@ class GridPublisher(Node):
         self.mesh_pkg = "amr_meshes"
         self.amrviz_pkg = "amrviz"
         self.mesh_folder = "meshes_amr"
-
+        self.central_pkg = "amr_central"
 
         #load in yaml
         try:
             self.config_file = yaml.safe_load(open(os.path.join(get_package_share_directory(self.amrviz_pkg), "config", "layout_config.yaml")))
+        except yaml.YAMLError as e:
+            self.get_logger().info(e)
+
+        try:
+            self.tape_mesh = self.config_file["top"]["tape_configurations"]["T"]["strip1"]["mesh"]
+            self.first_tile = self.config_file["top"]["tiles"]["tile0"]
+        except:
+            self.get_logger().warn("Cannot load any tiles, this may cause other features not to function correctly!")
+            self.tape_mesh = None
+            self.first_tile = None
+
+        #load in edge yaml
+        try:
+            self.edge_file = yaml.safe_load(open(os.path.join(get_package_share_directory(self.central_pkg), "test_data", "edge_positions.yaml")))
         except yaml.YAMLError as e:
             self.get_logger().info(e)
 
@@ -57,8 +81,6 @@ class GridPublisher(Node):
         names = self.config_file["top"]["robots"].keys()
         for name in names:
             self.robot_status[name] = 0
-        
-
 
     def BroadcastGridFrame(self):
 
@@ -268,7 +290,91 @@ class GridPublisher(Node):
 
         print("Published the msg")
 
-            
+    def update_blocked_routes(self, msg):
+        #update
+
+        if(self.edge_file == None or self.tape_mesh == None or self.first_tile == None):
+            return
+
+        markers = []
+
+        for edge in msg.data:
+
+            #edge string
+            str = f"edge_{edge}"
+
+            edge_data = self.edge_file[str]
+
+            marker = Marker()
+            marker.header.frame_id = self.config_file["top"]["map_frame"]
+            marker.header.stamp = rclpy.time.Time().to_msg()
+            marker.ns = str
+            marker.id = 3
+            marker.type = 10
+            marker.action = 0
+            marker.frame_locked = True
+
+            #fill out pose fto_msg(self)or marker
+            pos_x = (edge_data["end_x"] + edge_data["start_x"]) / 2
+            pos_y = (edge_data["end_y"] + edge_data["start_y"]) / 2
+
+            #center of tape
+
+            pose = Pose()
+            pose.position.x = pos_x
+            pose.position.y = pos_y
+            pose.position.z = ROUTE_STATUS_TAPE_HEIGHT
+
+            #get rotation in the form of quaternion
+            angle = atan2((edge_data["end_y"] - edge_data["start_y"]), (edge_data["end_x"] - edge_data["start_x"]))
+
+            orientation = euler2quat(0.0, 0.0, angle)
+
+            pose.orientation.x = orientation[1]
+            pose.orientation.y = orientation[2]
+            pose.orientation.z = orientation[3]
+            pose.orientation.w = orientation[0]
+
+            #fill out scale for marker
+            #get path length
+            path_length = pow(((edge_data["end_y"] - edge_data["start_y"])**2 + (edge_data["end_x"] - edge_data["start_x"])**2), .5)
+            scale_num = path_length / TAPE_DEFAULT_LENGTH
+
+            self.get_logger().info(f"scale: {scale_num}")
+
+            scale = Vector3()
+            scale.x = scale_num * self.first_tile["scale"][0]
+            scale.y = self.first_tile["scale"][1]
+            scale.z = self.first_tile["scale"][2]
+
+            #color
+            color = ColorRGBA()
+            color.r = ROUTE_BLOCKED_COLOR[0]
+            color.b = ROUTE_BLOCKED_COLOR[1]
+            color.g = ROUTE_BLOCKED_COLOR[2]
+            color.a = ROUTE_BLOCKED_COLOR[3]
+
+            #duration
+            duration = Duration().to_msg()
+            duration.nanosec = 0
+            duration.sec = 0
+
+            marker.pose = pose
+            marker.scale = scale
+            marker.color = color
+            marker.lifetime = duration
+                    
+            #set mesh resource
+            marker.mesh_resource = "file://" + os.path.join(get_package_share_directory(self.mesh_pkg), self.mesh_folder, self.tape_mesh, "model.ply")
+            marker.mesh_use_embedded_materials = False
+
+            markers.append(marker)
+
+        msg = MarkerArray()
+        msg.markers = markers
+
+        self.closed_path_pub.publish(msg)
+
     def configure_tile(self, key, config, tape_configs):
 
         #list of markers to be added

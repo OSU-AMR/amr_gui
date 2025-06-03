@@ -45,6 +45,8 @@ namespace amrviz
         void encoder_left_update_cb(const std_msgs::msg::Float32& msg);
         void encoder_right_update_cb(const std_msgs::msg::Float32& msg);
 
+        std::string current_robot = "";
+
        
         // UI Panel instance
         Ui_Sensors *uiPanel;
