@@ -23,8 +23,8 @@ import yaml
 from ros2node.api import get_node_names
 
 TAPE_DEFAULT_LENGTH = .3038
-ROUTE_STATUS_TAPE_HEIGHT = .009
-ROUTE_BLOCKED_COLOR = [1.0, 0.2, 0.2, 1.0]
+ROUTE_STATUS_TAPE_HEIGHT = .006
+ROUTE_BLOCKED_COLOR = [1.0, 0.2, 0.2, 0.6]
 
 class GridPublisher(Node):
 
@@ -323,8 +323,8 @@ class GridPublisher(Node):
             marker.frame_locked = True
 
             #fill out pose fto_msg(self)or marker
-            pos_x = (edge_data["end_x"] + edge_data["start_x"]) / 2
-            pos_y = (edge_data["end_y"] + edge_data["start_y"]) / 2
+            pos_x = (edge_data["start_x_disp"] + edge_data["end_x_disp"]) / 2
+            pos_y = (edge_data["start_y_disp"] + edge_data["end_y_disp"]) / 2
 
             #center of tape
 
@@ -334,7 +334,7 @@ class GridPublisher(Node):
             pose.position.z = ROUTE_STATUS_TAPE_HEIGHT
 
             #get rotation in the form of quaternion
-            angle = atan2((edge_data["end_y"] - edge_data["start_y"]), (edge_data["end_x"] - edge_data["start_x"]))
+            angle = atan2((edge_data["end_y_disp"] - edge_data["start_y_disp"]), (edge_data["end_x_disp"] - edge_data["start_x_disp"]))
 
             orientation = euler2quat(0.0, 0.0, angle)
 
@@ -345,10 +345,8 @@ class GridPublisher(Node):
 
             #fill out scale for marker
             #get path length
-            path_length = pow(((edge_data["end_y"] - edge_data["start_y"])**2 + (edge_data["end_x"] - edge_data["start_x"])**2), .5)
+            path_length = pow(((edge_data["end_y_disp"] - edge_data["start_y_disp"])**2 + (edge_data["end_x_disp"] - edge_data["start_x_disp"])**2), .5)
             scale_num = path_length / TAPE_DEFAULT_LENGTH
-
-            self.get_logger().info(f"scale: {scale_num}")
 
             scale = Vector3()
             scale.x = scale_num * self.first_tile["scale"][0]

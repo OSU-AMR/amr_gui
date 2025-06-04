@@ -59,6 +59,11 @@
             RVIZ plugin for AMR sensors
         </description>
     </class>
+    <class name="amrviz/Apriltag" type="amrviz::Apriltag" base_class_type="rviz_common::Panel">
+        <description>
+            RVIZ plugin for AMR apriltag spoofing
+        </description>
+    </class>
     <class name="amrviz/Template" type="amrviz::Template" base_class_type="rviz_common::Panel">
         <description>
             AMR RVIZ plugin Template
