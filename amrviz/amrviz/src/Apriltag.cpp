@@ -417,7 +417,7 @@ namespace amrviz
             t = tf_buffer->lookupTransform(to_frame, from_frame,tf2::TimePointZero);
             
             //transform is recent
-            if(t.header.stamp.sec + t.header.stamp.nanosec * 1000000000 + max_time_ago > get_ros2_time()){
+            if(t.header.stamp.sec + t.header.stamp.nanosec / 1000000000.0 + max_time_ago > get_ros2_time()){
                 
                 //likely being currently published
                 return true;
