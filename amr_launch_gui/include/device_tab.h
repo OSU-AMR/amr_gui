@@ -60,10 +60,13 @@ private:
     std::vector<LaunchStrip> launch_strips;
 
 protected:
-    void setComboBoxItems(QComboBox* comboBox, const std::vector<std::string>& items);
+    void setComboBoxItems(QComboBox* comboBox, std::vector<std::string>& items);
 
-    void loadLaunchStrip();
+    QComboBox* loadLaunchStrip();
     void removeLaunchStrip(int index);
 
+    std::string getLaunchStripCurrentLaunch(int index);
+    void setAvailableLaunchOptions(int index, std::vector<std::string> options);
+    int getLaunchStripsCount();
 };
 

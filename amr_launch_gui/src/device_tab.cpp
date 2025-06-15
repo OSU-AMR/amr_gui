@@ -22,8 +22,6 @@ DeviceTab::DeviceTab(std::string ui_file_path, QObject *parent) : QObject(parent
 
     //load all the children
     findChildren();
-
-    loadLaunchStrip();
 }
 
 void DeviceTab::findChildren(){
@@ -45,6 +43,22 @@ void DeviceTab::findChildren(){
 void DeviceTab::handle_data(GuiUpdateData data){
 
 }
+
+
+int DeviceTab::getLaunchStripsCount(){
+    return launch_strips.size();
+}
+
+std::string DeviceTab::getLaunchStripCurrentLaunch(int index){
+    //get the currently selected launch options
+    return launch_strips.at(index).getSelectedLaunch();
+}
+
+void DeviceTab::setAvailableLaunchOptions(int index, std::vector<std::string> options){
+    //set the launch options
+    launch_strips.at(index).setLaunchOptions(options);
+}
+
 
 void DeviceTab::onRebootPress(){
     renderShellText("The button has been pressed! The button has been pressed! The button has been pressed! The button has been pressed!The button has been pressed! The button has been pressed! The button has been pressed! The button has been pressed! The button has been pressed! The button has been pressed!The button has been pressed!The button has been pressed!The button has been pressed!The button has been pressed!The button has been pressed!The button has been pressed!The button has been pressed!The button has been pressed!The button has been pressed!The button has been pressed!The button has been pressed!\n\n\n\n\n\n\n\n\n\n");
@@ -125,13 +139,14 @@ int DeviceTab::countNewlines(const std::string& str) {
     return count;
 }
 
-void DeviceTab::loadLaunchStrip(){
+QComboBox* DeviceTab::loadLaunchStrip(){
     //loads in the launch strip ui
     launch_strips.push_back(LaunchStrip(LAUNCH_STRIP_SUBPATH));
 
     //add to the scroll view
     verticalLayoutScrollArea->addWidget(launch_strips.at(launch_strips.size() - 1).child_widget);
 
+    return launch_strips.at(launch_strips.size() - 1).getLaunchSelectPtr();
 }
 
 void DeviceTab::removeLaunchStrip(int index){
@@ -143,13 +158,13 @@ void DeviceTab::removeLaunchStrip(int index){
     launch_strips.erase(launch_strips.begin() + index);
 }
 
-void DeviceTab::setComboBoxItems(QComboBox* comboBox, const std::vector<std::string>& items) {
+void DeviceTab::setComboBoxItems(QComboBox* comboBox, std::vector<std::string>& items) {
     if (!comboBox) return;  // Safety check
 
-    comboBox->clear();  // Remove existing items
-
     //add in the default item
-    comboBox->addItem("");
+    items.push_back(std::string(""));
+
+    comboBox->clear();  // Remove existing items
 
     for (const auto& item : items) {
         comboBox->addItem(QString::fromStdString(item));

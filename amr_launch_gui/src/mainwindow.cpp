@@ -92,11 +92,7 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
 //direct central data
 void MainWindow::handleCentralData(GuiUpdateData data){
-
-    write_to_console("I have new central data");
-
     //send this to the central tab
-
     tabs.at(central_tab_index)->handle_data(data);
 }
 

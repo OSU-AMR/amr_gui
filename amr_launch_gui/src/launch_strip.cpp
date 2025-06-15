@@ -29,9 +29,37 @@ LaunchStrip::LaunchStrip(std::string ui_file_path)
 void LaunchStrip::findChildren(){
     //find all the childern and add pointers to make them easily accessible
     launch_progress_bar = child_widget->findChild<QProgressBar *>("launch_progress_bar");
-
+    uptime_label = child_widget->findChild<QLabel *>("uptime_label");
     launch_select = child_widget->findChild<QComboBox *>("launchSelect");
 }
+
+std::string LaunchStrip::getSelectedLaunch(){
+
+    return launch_select->currentText().toStdString();
+}
+
+void LaunchStrip::setLaunchOptions(std::vector<std::string> options){
+    setComboBoxItems(launch_select, options);
+}
+
+QComboBox *LaunchStrip::getLaunchSelectPtr(){
+    if(launch_select == nullptr){
+        write_to_console("nullptr");
+    }
+
+    return launch_select;
+}
+
+void LaunchStrip::setComboBoxItems(QComboBox* comboBox, std::vector<std::string>& items) {
+    if (!comboBox) return;  // Safety check
+
+    comboBox->clear();  // Remove existing items
+
+    for (const auto& item : items) {
+        comboBox->addItem(QString::fromStdString(item));
+    }
+}
+
 
 LaunchStrip::~LaunchStrip()
 {
