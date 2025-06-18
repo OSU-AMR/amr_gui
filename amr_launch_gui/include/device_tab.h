@@ -57,16 +57,20 @@ private:
 
     int current_shell_lines = 0;
 
-    std::vector<LaunchStrip> launch_strips;
+    std::vector<LaunchStrip *> launch_strips;
 
 protected:
     void setComboBoxItems(QComboBox* comboBox, std::vector<std::string>& items);
 
-    QComboBox* loadLaunchStrip();
+    LaunchStrip* loadLaunchStrip();
     void removeLaunchStrip(int index);
 
     std::string getLaunchStripCurrentLaunch(int index);
     void setAvailableLaunchOptions(int index, std::vector<std::string> options);
     int getLaunchStripsCount();
+
+    std::vector<QPushButton> getLaunchButtonPtrs();
+    std::vector<QPushButton> getHaltButtonPtrs();
+
 };
 

@@ -26,6 +26,11 @@ public:
 
     void run() override;
 
+public slots:
+    void handleCentralHostnameChange(QString hostname);
+    void handleCentralLaunchBegin(QString filename);
+    void handleCentralLaunchHalt(QString filename);
+
 signals:
     void amr_data_available(GuiUpdateData data);
     void central_data_available(GuiUpdateData data);
@@ -37,4 +42,6 @@ private:
     std::vector<std::string> amr_hosts;
 
     int direct_data(GuiUpdateData data);
+
+    std::string central_hostname;
 };

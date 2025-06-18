@@ -32,6 +32,12 @@ public:
 public slots:
     void write_to_console(std::string str);
 
+    void handleCentralLaunchBegin(QString filename);
+    void handleCentralLaunchHalt(QString filename);
+
+signals:
+    void centralLaunchBegin(QString filename);
+    void centralLaunchHalt(QString filename);
 
 private:
 
@@ -45,6 +51,8 @@ private:
     QWidget *main_widget;
 
     QLayout *layout;
+
+    CentralTab *central_tab;
 
     void resizeEvent(QResizeEvent* event);
 

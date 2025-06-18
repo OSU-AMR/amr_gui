@@ -43,7 +43,7 @@
           <layout class="QVBoxLayout" name="verticalLayout_3"/>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_2">
+          <widget class="QPushButton" name="launch_button">
            <property name="styleSheet">
             <string notr="true">
                 /* QPushButton */
@@ -68,7 +68,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="halt_button">
            <property name="styleSheet">
             <string notr="true">
                 /* QPushButton */

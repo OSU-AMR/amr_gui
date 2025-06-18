@@ -51,12 +51,12 @@ int DeviceTab::getLaunchStripsCount(){
 
 std::string DeviceTab::getLaunchStripCurrentLaunch(int index){
     //get the currently selected launch options
-    return launch_strips.at(index).getSelectedLaunch();
+    return launch_strips.at(index)->getSelectedLaunch();
 }
 
 void DeviceTab::setAvailableLaunchOptions(int index, std::vector<std::string> options){
     //set the launch options
-    launch_strips.at(index).setLaunchOptions(options);
+    launch_strips.at(index)->setLaunchOptions(options);
 }
 
 
@@ -139,20 +139,20 @@ int DeviceTab::countNewlines(const std::string& str) {
     return count;
 }
 
-QComboBox* DeviceTab::loadLaunchStrip(){
+LaunchStrip* DeviceTab::loadLaunchStrip(){
     //loads in the launch strip ui
-    launch_strips.push_back(LaunchStrip(LAUNCH_STRIP_SUBPATH));
+    launch_strips.push_back(new LaunchStrip(LAUNCH_STRIP_SUBPATH, this));
 
     //add to the scroll view
-    verticalLayoutScrollArea->addWidget(launch_strips.at(launch_strips.size() - 1).child_widget);
+    verticalLayoutScrollArea->addWidget(launch_strips.at(launch_strips.size() - 1)->child_widget);
 
-    return launch_strips.at(launch_strips.size() - 1).getLaunchSelectPtr();
+    return launch_strips.at(launch_strips.size() - 1);
 }
 
 void DeviceTab::removeLaunchStrip(int index){
 
     //remove from the scroll area
-    delete launch_strips.at(index).child_widget;
+    delete launch_strips.at(index)->child_widget;
 
     //remove from the array
     launch_strips.erase(launch_strips.begin() + index);

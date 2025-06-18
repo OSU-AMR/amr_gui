@@ -220,12 +220,28 @@ void CentralTab::update_launch_bars(){
     if(empty_index == -1){
 
         //always one empty launch strip
-        loadLaunchStrip();
+        load_and_connect_launch_strip();
 
         setAvailableLaunchOptions(getLaunchStripsCount() - 1, remaining_options);
     }   
 
 }
+
+void CentralTab::handleLaunchBeginPressed(QString filename){
+    emit emitCentralLaunchBegin(filename);
+}
+
+void CentralTab::handleLaunchHaltPressed(QString filename){
+    emit emitCentralLaunchHalt(filename);
+}
+
+void CentralTab::load_and_connect_launch_strip(){
+    LaunchStrip* strip = loadLaunchStrip();
+
+    connect(strip, &LaunchStrip::beginLaunch, this, &CentralTab::handleLaunchBeginPressed);
+    connect(strip, &LaunchStrip::haltLaunch, this, &CentralTab::handleLaunchHaltPressed);
+}
+
 
 void CentralTab::update_central_combo(){
     //refresh the list of centrals in the combo box
@@ -244,6 +260,9 @@ void CentralTab::update_central_combo(){
 void CentralTab::handleCentralComboChange(){
     //update the launch bars
     update_launch_bars();
+
+    //emit that this has changed
+    emit emitCentralHostname(selectCombo->currentText());
 }
 
 #include "moc_central_tab.cpp"

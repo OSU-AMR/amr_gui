@@ -48,11 +48,15 @@ void MainWindow::renderMainContent(){
 
     write_to_console("Completed file rendering");
 
-
     //connnect things to the server wrapper
     connect(sw, &ServerWrapper::amr_data_available, this, &MainWindow::handleAMRData, Qt::QueuedConnection);
     connect(sw, &ServerWrapper::central_data_available, this, &MainWindow::handleCentralData, Qt::QueuedConnection);
     sw->start();
+
+    //connect the central tab's launch strips
+    connect(central_tab, &CentralTab::emitCentralHostname, sw, &ServerWrapper::handleCentralHostnameChange, Qt::QueuedConnection);
+    connect(central_tab, &CentralTab::emitCentralLaunchBegin, sw, &ServerWrapper::handleCentralLaunchBegin, Qt::QueuedConnection);
+    connect(central_tab, &CentralTab::emitCentralLaunchHalt, sw, &ServerWrapper::handleCentralLaunchHalt, Qt::QueuedConnection);
 
     write_to_console("Started launch server!");
     
@@ -64,10 +68,10 @@ void MainWindow::renderCentralTab(){
 
     //create the tab object
     //CentralTab tab(this);
-    CentralTab *tab = new CentralTab(this);
+    central_tab = new CentralTab(this);
 
     //add to tab list
-    tabs.push_back(tab);
+    tabs.push_back(central_tab);
     tabs_widget->addTab(tabs.at(tabs.size() - 1)->child_widget, "Central");
 
     //remove the first tab as its a dummy
@@ -109,6 +113,14 @@ void MainWindow::write_to_console(std::string str)
     //write to the console
     QString message(str.c_str());
     qDebug() << message;
+}
+
+void MainWindow::handleCentralLaunchBegin(QString filename){
+    emit centralLaunchBegin(filename);
+}
+
+void MainWindow::handleCentralLaunchHalt(QString filename){
+    emit centralLaunchHalt(filename);
 }
 
 #include "moc_mainwindow.cpp"

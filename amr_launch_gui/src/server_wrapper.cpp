@@ -67,5 +67,37 @@ int ServerWrapper::direct_data(GuiUpdateData data){
     }
 }
 
+void ServerWrapper::handleCentralHostnameChange(QString hostname){
+    //set the central hostname
+    central_hostname = std::string(hostname.toStdString());
+}
+
+void ServerWrapper::handleCentralLaunchBegin(QString filename){
+    //tell the central to run a launch file
+
+    if(central_hostname != ""){
+        GuiUpdateData data;
+        data.target = central_hostname;
+        data.update_type = START_ROS_LAUNCH;
+        std::vector<std::string> args;
+        args.push_back(std::string(filename.toStdString()));
+        data.update_data = args;
+    }
+}
+
+void ServerWrapper::handleCentralLaunchHalt(QString filename){
+    //tell the central to stop a launch file
+
+    if(central_hostname != ""){
+        GuiUpdateData data;
+        data.target = central_hostname;
+        data.update_type = STOP_ROS_LAUNCH;
+        std::vector<std::string> args;
+        args.push_back(std::string(filename.toStdString()));
+        data.update_data = args;
+    }
+}
+
+
 #include "moc_server_wrapper.cpp"
 

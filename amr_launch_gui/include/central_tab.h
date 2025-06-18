@@ -26,10 +26,19 @@ public:
 
     void handle_data(GuiUpdateData data) override;
 
+signals:
+
+    void emitCentralHostname(QString hostname);
+    void emitCentralLaunchBegin(QString filename);
+    void emitCentralLaunchHalt(QString filename);
+
 public slots:
 
     //handle when the central combo is changed
     void handleCentralComboChange();
+
+    void handleLaunchBeginPressed(QString filename);
+    void handleLaunchHaltPressed(QString filename);
 
 private:
     //data structure
@@ -40,6 +49,8 @@ private:
     void find_central_children();
 
     void update_launch_bars();
+
+    void load_and_connect_launch_strip();
 
     CentralData* get_current_central_data();
 

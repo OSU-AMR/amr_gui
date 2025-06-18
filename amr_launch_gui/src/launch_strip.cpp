@@ -1,7 +1,7 @@
 
 #include "launch_strip.h"
 
-LaunchStrip::LaunchStrip(std::string ui_file_path)
+LaunchStrip::LaunchStrip(std::string ui_file_path, QObject *parent) : QObject(parent)
 {
     //load in from layout file
     QUiLoader loader;
@@ -24,6 +24,10 @@ LaunchStrip::LaunchStrip(std::string ui_file_path)
 
     //load all the children
     findChildren();
+
+    //connec5 5h3 buttons
+    connect(launch_button, &QPushButton::clicked, this, &LaunchStrip::handleLaunchPress);
+    connect(halt_button, &QPushButton::clicked, this, &LaunchStrip::handleHaltPress);
 }
 
 void LaunchStrip::findChildren(){
@@ -31,6 +35,8 @@ void LaunchStrip::findChildren(){
     launch_progress_bar = child_widget->findChild<QProgressBar *>("launch_progress_bar");
     uptime_label = child_widget->findChild<QLabel *>("uptime_label");
     launch_select = child_widget->findChild<QComboBox *>("launchSelect");
+    launch_button = child_widget->findChild<QPushButton *>("launch_button");
+    halt_button = child_widget->findChild<QPushButton *>("halt_button");
 }
 
 std::string LaunchStrip::getSelectedLaunch(){
@@ -43,11 +49,15 @@ void LaunchStrip::setLaunchOptions(std::vector<std::string> options){
 }
 
 QComboBox *LaunchStrip::getLaunchSelectPtr(){
-    if(launch_select == nullptr){
-        write_to_console("nullptr");
-    }
-
     return launch_select;
+}
+    
+QPushButton *LaunchStrip::getLaunchButtonPtr(){
+    return launch_button;
+}
+
+QPushButton *LaunchStrip::getHaltButtonPtr(){
+    return halt_button;
 }
 
 void LaunchStrip::setComboBoxItems(QComboBox* comboBox, std::vector<std::string>& items) {
@@ -60,8 +70,30 @@ void LaunchStrip::setComboBoxItems(QComboBox* comboBox, std::vector<std::string>
     }
 }
 
+void LaunchStrip::handleLaunchPress(){
+    if(launch_select->currentText() == ""){
+        return;
+    }
+
+    //disable the combo
+    launch_select->setDisabled(true);
+
+    emit beginLaunch(launch_select->currentText());
+}
+
+void LaunchStrip::handleHaltPress(){
+    if(launch_select->currentText() == ""){
+        return;
+    }
+
+    launch_select->setDisabled(false);
+
+    emit haltLaunch(launch_select->currentText());
+}
 
 LaunchStrip::~LaunchStrip()
 {
 
 }
+
+#include "moc_launch_strip.cpp"
