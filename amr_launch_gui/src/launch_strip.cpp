@@ -25,9 +25,10 @@ LaunchStrip::LaunchStrip(std::string ui_file_path, QObject *parent) : QObject(pa
     //load all the children
     findChildren();
 
-    //connec5 5h3 buttons
+    //connect the buttons
     connect(launch_button, &QPushButton::clicked, this, &LaunchStrip::handleLaunchPress);
     connect(halt_button, &QPushButton::clicked, this, &LaunchStrip::handleHaltPress);
+    connect(apply_button, &QPushButton::clicked, this, &LaunchStrip::handleApplyPress);
 }
 
 void LaunchStrip::findChildren(){
@@ -37,15 +38,34 @@ void LaunchStrip::findChildren(){
     launch_select = child_widget->findChild<QComboBox *>("launchSelect");
     launch_button = child_widget->findChild<QPushButton *>("launch_button");
     halt_button = child_widget->findChild<QPushButton *>("halt_button");
+    apply_button = child_widget->findChild<QPushButton *>("applylauncharg");
+    arg_combo = child_widget->findChild<QComboBox *>("launchargcombo");
+    arg_value_box = child_widget->findChild<QLineEdit *>("launchargvalue");
 }
 
-std::string LaunchStrip::getSelectedLaunch(){
+AvailableLaunches LaunchStrip::getSelectedLaunch(){
 
-    return launch_select->currentText().toStdString();
+    std::string launch_name = launch_select->currentText().toStdString();
+
+    for(int i = 0; i < launches.size(); i++){
+        if(launch_name == launches.at(i).launch_name){
+            return launches.at(i);
+        }
+    }
+
+    write_to_console("Could not find launch with name in launch strip!");
+    return AvailableLaunches();
 }
 
-void LaunchStrip::setLaunchOptions(std::vector<std::string> options){
-    setComboBoxItems(launch_select, options);
+void LaunchStrip::setLaunchOptions(std::vector<AvailableLaunches> options){
+    std::vector<std::string> name_vector;
+    for(int i = 0; i < options.size(); i++){
+        name_vector.push_back(options.at(i).launch_name);
+    }
+
+    launches = options;
+
+    setComboBoxItems(launch_select, name_vector);
 }
 
 QComboBox *LaunchStrip::getLaunchSelectPtr(){
@@ -89,6 +109,10 @@ void LaunchStrip::handleHaltPress(){
     launch_select->setDisabled(false);
 
     emit haltLaunch(launch_select->currentText());
+}
+
+void LaunchStrip::handleApplyPress(){
+    
 }
 
 LaunchStrip::~LaunchStrip()

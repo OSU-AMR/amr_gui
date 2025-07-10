@@ -15,10 +15,12 @@
 #include "launch_strip.h"
 #include "debug_tools.h"
 #include "update_data.h"
+#include "central_data.h"
 
 
 #define LAUNCH_STRIP_SUBPATH "/ui/LaunchStrip.ui"
 #define MAX_SHELL_LINES 500
+#define LAUNCH_FILE_SUFFIX std::string("launch.py")
 
 class DeviceTab : public QObject{
 
@@ -65,12 +67,14 @@ protected:
     LaunchStrip* loadLaunchStrip();
     void removeLaunchStrip(int index);
 
-    std::string getLaunchStripCurrentLaunch(int index);
-    void setAvailableLaunchOptions(int index, std::vector<std::string> options);
+    AvailableLaunches getLaunchStripCurrentLaunch(int index);
+    void setAvailableLaunchOptions(int index, std::vector<AvailableLaunches> options);
     int getLaunchStripsCount();
 
     std::vector<QPushButton> getLaunchButtonPtrs();
     std::vector<QPushButton> getHaltButtonPtrs();
+
+    bool isLaunchFile(std::string file_name);
 
 };
 

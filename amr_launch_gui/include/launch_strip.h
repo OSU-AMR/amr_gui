@@ -9,6 +9,7 @@
 #include <ament_index_cpp/get_package_share_directory.hpp>
 
 #include "debug_tools.h"
+#include "central_data.h"
 
 class LaunchStrip : public QObject{
     Q_OBJECT
@@ -19,8 +20,8 @@ public:
 
     QWidget *child_widget;
 
-    std::string getSelectedLaunch();
-    void setLaunchOptions(std::vector<std::string> options);
+    AvailableLaunches getSelectedLaunch();
+    void setLaunchOptions(std::vector<AvailableLaunches> options);
 
     QComboBox *getLaunchSelectPtr();
 
@@ -36,6 +37,7 @@ public slots:
 
     void handleLaunchPress();
     void handleHaltPress();
+    void handleApplyPress();
 
 private:
 
@@ -47,10 +49,13 @@ private:
     QLabel *uptime_label;
     QPushButton *launch_button;
     QPushButton *halt_button;
+    QPushButton *apply_button;
+    QComboBox *arg_combo;
+    QLineEdit *arg_value_box;
     //-----------------------
 
     void setComboBoxItems(QComboBox* comboBox, std::vector<std::string>& items);
 
-    
+    std::vector<AvailableLaunches> launches;    
 
 };

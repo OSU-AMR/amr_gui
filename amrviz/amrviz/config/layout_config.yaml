@@ -67,55 +67,62 @@ top:
         color: [0.2, 0.2, 0.2, 1.0]
         pose: [0.0, -0.07595, 0.008, 0.0, 0.0, 1.5707]
         scale: [0.5, 1.0, 1.0]
+    spur_supplimental:
+      color: [0.2, 0.2, 0.2, 1.0]
+  destination_config:
+    scale: [0.25, 0.25, 0.015]
+    pose: [0.0, 0.0, 0.008, 0.0, 0.0, 0.0]
+    color: [0.6, 0.0, 0.0, 0.4]
+
   desitnations:
     dest_1:
       pose: [0.0, 0.0, 0.007, 0.0, 0.0, 0.0]
       scale: [0.0, 0.0, 0.0]
   robots:
     robot0:
-      frame: "robot0_base"
+      frame: "Robot0base"
       mesh: "amr"
       color: [0.8, 1.0, 1.0, 1.0]
       pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
       scale: [0.8, 0.8, 0.8]
     robot1:
-      frame: "robot1_base"
+      frame: "Robot1base"
       mesh: "amr"
       color: [1.0, 0.8, 1.0, 1.0]
       pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
       scale: [0.8, 0.8, 0.8]
     robot2:
-      frame: "robot3_base"
+      frame: "Robot3base"
       mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
       pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
       scale: [0.8, 0.8, 0.8]
     robot3:
-      frame: "robot4_base"
+      frame: "Robot4base"
       mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
       pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
       scale: [0.8, 0.8, 0.8]
     robot4:
-      frame: "robot5_base"
+      frame: "Robot5base"
       mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
       pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
       scale: [0.8, 0.8, 0.8]
     robot5:
-      frame: "robot6_base"
+      frame: "Robot6base"
       mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
       pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
       scale: [0.8, 0.8, 0.8]
     robot6:
-      frame: "robot2_base"
+      frame: "Robot2base"
       mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
       pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]
       scale: [0.8, 0.8, 0.8]
     robotdummy:
-      frame: "robotdummy_base"
+      frame: "Robotdummy_base"
       mesh: "amr"
       color: [1.0, 1.0, 1.0, 1.0]
       pose: [0.0, 0.0, 0.0, 0.0, 0.0, -1.5707]

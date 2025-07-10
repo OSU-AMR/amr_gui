@@ -49,12 +49,12 @@ int DeviceTab::getLaunchStripsCount(){
     return launch_strips.size();
 }
 
-std::string DeviceTab::getLaunchStripCurrentLaunch(int index){
+AvailableLaunches DeviceTab::getLaunchStripCurrentLaunch(int index){
     //get the currently selected launch options
     return launch_strips.at(index)->getSelectedLaunch();
 }
 
-void DeviceTab::setAvailableLaunchOptions(int index, std::vector<std::string> options){
+void DeviceTab::setAvailableLaunchOptions(int index, std::vector<AvailableLaunches> options){
     //set the launch options
     launch_strips.at(index)->setLaunchOptions(options);
 }
@@ -169,6 +169,13 @@ void DeviceTab::setComboBoxItems(QComboBox* comboBox, std::vector<std::string>& 
     for (const auto& item : items) {
         comboBox->addItem(QString::fromStdString(item));
     }
+}
+
+bool DeviceTab::isLaunchFile(std::string file_name) {
+    if (file_name.length() < LAUNCH_FILE_SUFFIX.length()) {
+        return false; // Full string is shorter than the ending
+    }
+    return file_name.compare(file_name.length() - LAUNCH_FILE_SUFFIX.length(), LAUNCH_FILE_SUFFIX.length(), LAUNCH_FILE_SUFFIX) == 0;
 }
 
 DeviceTab::~DeviceTab()

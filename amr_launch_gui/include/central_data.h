@@ -7,6 +7,14 @@
 #include "communication_signals.h"
 
 //struct to define the data retained for a central node
+
+struct AvailableLaunches{
+    std::string launch_name;
+
+    std::vector<std::string> launch_arg_names;
+    std::vector<std::string> launch_arg_values;
+};
+
 struct CentralData{
 
     std::string hostname;
@@ -14,7 +22,7 @@ struct CentralData{
     std::string domain;
     std::string status;
     
-    std::vector<std::string> availble_launches;
+    std::vector<AvailableLaunches> availble_launches;
     std::vector<LaunchData> launch_data;
 };
 

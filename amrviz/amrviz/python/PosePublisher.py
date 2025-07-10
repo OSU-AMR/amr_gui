@@ -114,7 +114,14 @@ class GridPublisher(Node):
             #the yaml tile object
             tile = tiles[tile_key]
 
-            tile_markers = self.configure_tile(tile_key, tile, self.config_file["top"]["tape_configurations"])
+            spur_configurations = dict()
+            try:
+                spur_configurations = tile["spurs"]
+            except:
+                #is expected
+                pass
+
+            tile_markers = self.configure_tile(tile_key, tile, self.config_file["top"]["tape_configurations"], spur_configurations)
 
             for marker in tile_markers:
                 markers.append(marker)
@@ -125,7 +132,7 @@ class GridPublisher(Node):
             #the yaml tile object
             tag = tags[tag_key]
 
-            tag_markers = self.configure_tile(tag_key, tag, self.config_file["top"]["tape_configurations"])
+            tag_markers = self.configure_tile(tag_key, tag, self.config_file["top"]["tape_configurations"], dict()) #cursed
 
             for marker in tag_markers:
                 markers.append(marker)
@@ -200,7 +207,7 @@ class GridPublisher(Node):
         mesh = config["mesh"]
         marker.mesh_resource = "file://" + os.path.join(get_package_share_directory(self.mesh_pkg), self.mesh_folder, mesh, "model.dae")
         marker.mesh_use_embedded_materials = False
-
+            
         return marker
 
     def updateRobotStatus(self):
@@ -403,7 +410,7 @@ class GridPublisher(Node):
 
         self.closed_path_pub.publish(msg)
 
-    def configure_tile(self, key, config, tape_configs):
+    def configure_tile(self, key, config, tape_configs, spur_configs):
 
         #list of markers to be added
         marker_list = []
@@ -513,11 +520,20 @@ class GridPublisher(Node):
         #set mesh resource
         marker.mesh_resource = "file://" + os.path.join(get_package_share_directory(self.mesh_pkg), self.mesh_folder, mesh, "model.ply")
         marker.mesh_use_embedded_materials = False
-        
-        marker_list.append(marker)
 
+        marker_list.append(marker)
+        
+        for index, spur in enumerate(spur_configs.keys()):
+
+            #configure the spur tape strip
+
+            spur_config = spur_configs[spur]
+            #add the spur color in
+            spur_config.update(tape_configs["spur_supplimental"])
+            marker_list.append(self.configure_tape_strip(key + "/spur_" + str(index), config, spur_config))
+            
         return marker_list
-    
+
     def configure_tape_strip(self, key, tile_config, tape_config):
         #fill out marker header
         marker = Marker()

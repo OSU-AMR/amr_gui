@@ -55,16 +55,26 @@ int ServerWrapper::direct_data(GuiUpdateData data){
     for(int i = 0; i < amr_hosts.size(); i++){
         //send to a amr host
 
-        //emit the signal so the main window can further redirect
-        emit amr_data_available(data);
+        if(amr_hosts.at(i) == data.target){
+            //emit the signal so the main window can further redirect
+            emit amr_data_available(data);
+
+            return 0;
+        }
     }
 
     for(int i = 0; i < central_hosts.size(); i++){
         //send to a central host
 
-        //emit the signal so the main window can further redirect
-        emit central_data_available(data);
+        if(central_hosts.at(i) == data.target){
+            //emit the signal so the main window can further redirect
+            emit central_data_available(data);
+
+            return 0;
+        }
     }
+
+    return 0;
 }
 
 void ServerWrapper::handleCentralHostnameChange(QString hostname){
@@ -82,6 +92,13 @@ void ServerWrapper::handleCentralLaunchBegin(QString filename){
         std::vector<std::string> args;
         args.push_back(std::string(filename.toStdString()));
         data.update_data = args;
+
+        //send the data to the central
+
+        write_to_console("Sending Launch to Central");
+        if(server.distribute_message(data) < 0){
+            write_to_console("Could not find target when handling central launch!");
+        }
     }
 }
 
@@ -95,6 +112,10 @@ void ServerWrapper::handleCentralLaunchHalt(QString filename){
         std::vector<std::string> args;
         args.push_back(std::string(filename.toStdString()));
         data.update_data = args;
+
+        if(server.distribute_message(data) < 0){
+            write_to_console("Could not find target when handling central launch!");
+        }
     }
 }
 

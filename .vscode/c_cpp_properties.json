@@ -1,0 +1,31 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/hollis/AMR/install/titan_canmore/include/**",
+        "/home/hollis/AMR/install/amrviz/include/**",
+        "/home/hollis/AMR/install/amr_msgs/include/**",
+        "/home/hollis/AMR/install/amr_launcher/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/hollis/AMR/src/Micro-XRCE-DDS-Agent/include/**",
+        "/home/hollis/AMR/src/amr_cfm/include/**",
+        "/home/hollis/AMR/src/amr_gui/amr_launch_gui/include/**",
+        "/home/hollis/AMR/src/amr_gui/amrviz/amrviz/include/**",
+        "/home/hollis/AMR/src/amr_roboware/amr_launcher/include/**",
+        "/home/hollis/AMR/src/amr_roboware/amr_roboware/include/**",
+        "/home/hollis/AMR/src/zenoh_test/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
