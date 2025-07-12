@@ -22,8 +22,6 @@ void CentralTab::find_central_children(){
 void CentralTab::handle_data(GuiUpdateData data){
     //update the data from the GUI
 
-    write_to_console("New Data: " + data.update_type);
-
     if(data.update_type == APPEND_CENTRAL){
         //add a new central node
 
@@ -82,14 +80,20 @@ void CentralTab::handle_data(GuiUpdateData data){
                             it->second.availble_launches.push_back(launch_datum);
                         }
 
+                        launch_datum = AvailableLaunches(); //re declare a new launch so vectors are cleared
                         launch_datum.launch_name = data.update_data.at(i);
-                    }else{  
+                    }else if(data.update_data.at(i) != ""){  
                         //add launch argument
                         launch_datum.launch_arg_names.push_back(data.update_data.at(i));
                         i++;
                         launch_datum.launch_arg_values.push_back(data.update_data.at(i));
                     }
 
+                }
+
+                //make sure the last datum gets appended
+                if(launch_datum.launch_name != ""){
+                    it->second.availble_launches.push_back(launch_datum);
                 }
 
                 update_launch_bars();
@@ -224,10 +228,14 @@ void CentralTab::update_launch_bars(){
 }
 
 void CentralTab::handleLaunchBeginPressed(QString filename){
+    update_launch_bars();
+
     emit emitCentralLaunchBegin(filename);
 }
 
 void CentralTab::handleLaunchHaltPressed(QString filename){
+    update_launch_bars();
+
     emit emitCentralLaunchHalt(filename);
 }
 

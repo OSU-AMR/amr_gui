@@ -10,6 +10,8 @@
 
 #include "debug_tools.h"
 #include "central_data.h"
+#include "communication_signals.h"
+
 
 class LaunchStrip : public QObject{
     Q_OBJECT
@@ -21,6 +23,7 @@ public:
     QWidget *child_widget;
 
     AvailableLaunches getSelectedLaunch();
+    void setLaunchArgValue(std::string str, int arg_index);
     void setLaunchOptions(std::vector<AvailableLaunches> options);
 
     QComboBox *getLaunchSelectPtr();
@@ -38,6 +41,8 @@ public slots:
     void handleLaunchPress();
     void handleHaltPress();
     void handleApplyPress();
+    void handleLaunchSelect();
+    void handleLaunchArgSelect();
 
 private:
 
@@ -54,8 +59,10 @@ private:
     QLineEdit *arg_value_box;
     //-----------------------
 
-    void setComboBoxItems(QComboBox* comboBox, std::vector<std::string>& items);
+    void setComboBoxItems(QComboBox* comboBox, std::vector<std::string> items);
 
-    std::vector<AvailableLaunches> launches;    
+    std::vector<AvailableLaunches> launches; 
+
+    std::string formulate_launch_request_string(AvailableLaunches launch);   
 
 };

@@ -95,9 +95,9 @@ void ServerWrapper::handleCentralLaunchBegin(QString filename){
 
         //send the data to the central
 
-        write_to_console("Sending Launch to Central");
+        write_to_console("Sending Launch to Central\n");
         if(server.distribute_message(data) < 0){
-            write_to_console("Could not find target when handling central launch!");
+            write_to_console("Could not find target when handling central launch!\n");
         }
     }
 }
