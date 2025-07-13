@@ -8,6 +8,7 @@
 #include <std_srvs/srv/trigger.hpp>
 #include <std_msgs/msg/float32.hpp>
 #include <std_msgs/msg/string.hpp>
+#include <std_msgs/msg/u_int16.hpp>
 #include "ui_sensors.h"
 #include <string>
 #include <stdio.h>
@@ -40,8 +41,8 @@ namespace amrviz
 
         //subscriber callbacks
         void RFID_update_cb(const std_msgs::msg::String& msg);
-        void IR_left_update_cb(const std_msgs::msg::Float32& msg);
-        void IR_right_update_cb(const std_msgs::msg::Float32& msg);
+        void IR_left_update_cb(const std_msgs::msg::UInt16& msg);
+        void IR_right_update_cb(const std_msgs::msg::UInt16& msg);
         void encoder_left_update_cb(const std_msgs::msg::Float32& msg);
         void encoder_right_update_cb(const std_msgs::msg::Float32& msg);
 
@@ -52,8 +53,8 @@ namespace amrviz
         Ui_Sensors *uiPanel;
 
         //ros stuff
-        rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr IR_sub_L;
-        rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr IR_sub_R;
+        rclcpp::Subscription<std_msgs::msg::UInt16>::SharedPtr IR_sub_L;
+        rclcpp::Subscription<std_msgs::msg::UInt16>::SharedPtr IR_sub_R;
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr encoder_sub_L;
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr encoder_sub_R;
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr RFID_sub;
