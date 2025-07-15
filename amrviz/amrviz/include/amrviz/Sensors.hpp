@@ -9,6 +9,7 @@
 #include <std_msgs/msg/float32.hpp>
 #include <std_msgs/msg/string.hpp>
 #include <std_msgs/msg/u_int16.hpp>
+#include <amr_msgs/msg/encoder.hpp>
 #include "ui_sensors.h"
 #include <string>
 #include <stdio.h>
@@ -17,8 +18,7 @@
 #define HEARTBEAT_STRING "heartbeat"
 #define LEFT_IR_TOPIC "/state/ir/left"
 #define RIGHT_IR_TOPIC "/state/ir/right"
-#define LEFT_ENCODER_TOPIC "/state/encoder/left"
-#define RIGHT_ENCODER_TOPIC "/state/encoder/right"
+#define ENCODER_TOPIC "/state/encoder"
 #define RFID_TOPIC "/state/rfid"
 
 using namespace std::chrono_literals;
@@ -43,8 +43,7 @@ namespace amrviz
         void RFID_update_cb(const std_msgs::msg::String& msg);
         void IR_left_update_cb(const std_msgs::msg::UInt16& msg);
         void IR_right_update_cb(const std_msgs::msg::UInt16& msg);
-        void encoder_left_update_cb(const std_msgs::msg::Float32& msg);
-        void encoder_right_update_cb(const std_msgs::msg::Float32& msg);
+        void encoder_update_cb(const amr_msgs::msg::Encoder& msg);
 
         std::string current_robot = "";
 
@@ -55,8 +54,7 @@ namespace amrviz
         //ros stuff
         rclcpp::Subscription<std_msgs::msg::UInt16>::SharedPtr IR_sub_L;
         rclcpp::Subscription<std_msgs::msg::UInt16>::SharedPtr IR_sub_R;
-        rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr encoder_sub_L;
-        rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr encoder_sub_R;
+        rclcpp::Subscription<amr_msgs::msg::Encoder>::SharedPtr encoder_sub;
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr RFID_sub;
 
         //robot refresh timer

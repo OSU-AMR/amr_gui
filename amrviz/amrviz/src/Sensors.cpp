@@ -71,8 +71,7 @@ namespace amrviz
             RFID_sub = node->create_subscription<std_msgs::msg::String>(slash_str + selected_robot + RFID_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::RFID_update_cb, this, _1)); 
             IR_sub_L = node->create_subscription<std_msgs::msg::UInt16>(slash_str + selected_robot + LEFT_IR_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::IR_left_update_cb, this, _1)); 
             IR_sub_R = node->create_subscription<std_msgs::msg::UInt16>(slash_str + selected_robot + RIGHT_IR_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::IR_right_update_cb, this, _1)); 
-            encoder_sub_L = node->create_subscription<std_msgs::msg::Float32>(slash_str + selected_robot + LEFT_ENCODER_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::encoder_left_update_cb, this, _1)); 
-            encoder_sub_R = node->create_subscription<std_msgs::msg::Float32>(slash_str + selected_robot + RIGHT_ENCODER_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::encoder_right_update_cb, this, _1)); 
+            encoder_sub = node->create_subscription<amr_msgs::msg::Encoder>(slash_str + selected_robot + ENCODER_TOPIC, rclcpp::SystemDefaultsQoS(), std::bind(&Sensors::encoder_update_cb, this, _1)); 
         }    
 
         current_robot = selected_robot;
@@ -96,14 +95,10 @@ namespace amrviz
         uiPanel->IR_right_block->setText(QString::fromStdString(std::to_string(msg.data)));
     }
 
-    void Sensors::encoder_left_update_cb(const std_msgs::msg::Float32& msg){
+    void Sensors::encoder_update_cb(const amr_msgs::msg::Encoder& msg){
         //update the RFID data out
-        uiPanel->encoder_left_block->setText(QString::fromStdString(std::to_string(msg.data)));
-    }
-
-    void Sensors::encoder_right_update_cb(const std_msgs::msg::Float32& msg){
-        //update the RFID data out
-        uiPanel->encoder_right_block->setText(QString::fromStdString(std::to_string(msg.data)));
+        uiPanel->encoder_left_block->setText(QString::fromStdString(std::to_string(msg.left_angle)));
+        uiPanel->encoder_right_block->setText(QString::fromStdString(std::to_string(msg.right_angle)));
     }
 
     void Sensors::refresh_robot_list(){
