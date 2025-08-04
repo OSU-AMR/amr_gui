@@ -5,6 +5,8 @@ Various QT pannels are used to display robot data. It is best to start from the 
 
 Python code in this repo largely renders the map and the AMR's in the RVIZ pannel. This code can be refined but works as is. If the map frame does not appear, make sure the blueprint translator has been run and whatever DDS required is up.
 
+There is a diagnostic overlay, similar to the riptide one. However, this has been depricated with the indroduction of the new software. It should be minimal work to restore this and would work well in displaying health monitor data.
+
 # Meshes
 
 The format for these date back to the riptide days as some of the code required to render AMRs has been taken from riptide.
