@@ -69,11 +69,12 @@ top:
         scale: [0.5, 1.0, 1.0]
     spur_supplimental:
       color: [0.2, 0.2, 0.2, 1.0]
-  destination_config:
+  destination_config: #dead code?
     scale: [0.25, 0.25, 0.015]
     pose: [0.0, 0.0, 0.008, 0.0, 0.0, 0.0]
     color: [0.6, 0.0, 0.0, 0.4]
 
+  #dead code?
   desitnations:
     dest_1:
       pose: [0.0, 0.0, 0.007, 0.0, 0.0, 0.0]
