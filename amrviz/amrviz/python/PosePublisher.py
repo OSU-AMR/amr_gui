@@ -96,10 +96,12 @@ class GridPublisher(Node):
         t.transform.translation.x = 0.0
         t.transform.translation.y = 0.0
         t.transform.translation.z = 0.0
+        t.transform.rotation.w = 1.0 
 
         t.transform.rotation.x = 0.0
         t.transform.rotation.y = 0.0
         t.transform.rotation.z = 0.0
+        t.transform.rotation.w = 1.0 
 
         self.tf_static_broadcaster.sendTransform(t)
 
@@ -126,17 +128,25 @@ class GridPublisher(Node):
             for marker in tile_markers:
                 markers.append(marker)
  
-        tags = self.config_file["top"]["tags"]
+        # --- THIS IS THE FIX ---
+        try:
+            tags = self.config_file["top"]["tags"]
 
-        for tag_key in tags.keys():
-            #the yaml tile object
-            tag = tags[tag_key]
+            for tag_key in tags.keys():
+                #the yaml tile object
+                tag = tags[tag_key]
 
-            tag_markers = self.configure_tile(tag_key, tag, self.config_file["top"]["tape_configurations"], dict()) #cursed
+                tag_markers = self.configure_tile(tag_key, tag, self.config_file["top"]["tape_configurations"], dict()) #cursed
 
-            for marker in tag_markers:
-                markers.append(marker)
-
+                for marker in tag_markers:
+                    markers.append(marker)
+        
+        except KeyError:
+            self.get_logger().warn("Key 'tags' not found in config_file['top']. Skipping tag markers.")
+            # This 'pass' just means we will safely skip this section
+            # and continue with the rest of the function.
+            pass
+        # --- END OF FIX ---
         
         msg = MarkerArray()
 
@@ -190,9 +200,10 @@ class GridPublisher(Node):
         #color
         color = ColorRGBA()
         color.r = config["color"][0]
-        color.b = config["color"][1]
-        color.g = config["color"][2]
+        color.b = config.get("color", [1.0, 1.0, 1.0, 1.0])[1]  # Added .get() for safety
+        color.g = config.get("color", [1.0, 1.0, 1.0, 1.0])[2]  # Added .get() for safety
         color.a = config["color"][3]
+
 
         #duration
         duration = Duration().to_msg()
@@ -452,6 +463,7 @@ class GridPublisher(Node):
         color.g = config["color"][2]
         color.a = config["color"][3]
 
+
         #duration
         duration = Duration().to_msg()
         duration.nanosec = 0
@@ -627,6 +639,7 @@ class GridPublisher(Node):
         scale.x = config["scale"][0]
         scale.y = config["scale"][1]
         scale.z = config["scale"][2]
+
 
         #color
         color = ColorRGBA()

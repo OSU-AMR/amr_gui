@@ -1,6 +1,6 @@
 Panels:
   - Class: rviz_common/Displays
-    Help Height: 78
+    Help Height: 138
     Name: Displays
     Property Tree Widget:
       Expanded:
@@ -8,10 +8,11 @@ Panels:
         - /Status1
         - /MarkerArray1/Topic1
         - /MarkerArray2
+        - /TF1
         - /MarkerArray3
         - /MarkerArray3/Topic1
       Splitter Ratio: 0.5
-    Tree Height: 283
+    Tree Height: 466
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -94,17 +95,120 @@ Visualization Manager:
         tag0: true
         tag1: true
         tag10: true
+        tag100: true
+        tag101: true
+        tag102: true
+        tag103: true
+        tag104: true
+        tag105: true
+        tag106: true
+        tag107: true
+        tag108: true
+        tag109: true
         tag11: true
+        tag110: true
+        tag111: true
+        tag112: true
+        tag113: true
+        tag114: true
+        tag115: true
+        tag116: true
+        tag117: true
+        tag118: true
+        tag119: true
         tag12: true
+        tag120: true
+        tag121: true
+        tag122: true
+        tag123: true
+        tag124: true
+        tag125: true
+        tag126: true
+        tag127: true
+        tag128: true
+        tag129: true
         tag13: true
+        tag130: true
+        tag131: true
+        tag132: true
+        tag133: true
+        tag134: true
+        tag135: true
+        tag136: true
+        tag137: true
+        tag138: true
+        tag139: true
         tag14: true
+        tag140: true
+        tag141: true
+        tag142: true
+        tag143: true
+        tag144: true
+        tag145: true
+        tag146: true
+        tag147: true
+        tag148: true
+        tag149: true
         tag15: true
+        tag150: true
+        tag151: true
+        tag152: true
+        tag153: true
+        tag154: true
+        tag155: true
+        tag156: true
+        tag157: true
+        tag158: true
+        tag159: true
         tag16: true
+        tag160: true
+        tag161: true
+        tag162: true
+        tag163: true
+        tag164: true
+        tag165: true
+        tag166: true
+        tag167: true
+        tag168: true
+        tag169: true
         tag17: true
+        tag170: true
+        tag171: true
+        tag172: true
+        tag173: true
+        tag174: true
+        tag175: true
+        tag176: true
+        tag177: true
+        tag178: true
+        tag179: true
         tag18: true
+        tag180: true
+        tag181: true
+        tag182: true
+        tag183: true
+        tag184: true
+        tag185: true
+        tag186: true
+        tag187: true
+        tag188: true
+        tag189: true
         tag19: true
+        tag190: true
+        tag191: true
+        tag192: true
+        tag193: true
+        tag194: true
+        tag195: true
+        tag196: true
+        tag197: true
+        tag198: true
+        tag199: true
         tag2: true
         tag20: true
+        tag200: true
+        tag201: true
+        tag202: true
         tag21: true
         tag22: true
         tag23: true
@@ -130,11 +234,67 @@ Visualization Manager:
         tag41: true
         tag42: true
         tag43: true
+        tag44: true
+        tag45: true
+        tag46: true
+        tag47: true
+        tag48: true
+        tag49: true
         tag5: true
+        tag50: true
+        tag51: true
+        tag52: true
+        tag53: true
+        tag54: true
+        tag55: true
+        tag56: true
+        tag57: true
+        tag58: true
+        tag59: true
         tag6: true
+        tag60: true
+        tag61: true
+        tag62: true
+        tag63: true
+        tag64: true
+        tag65: true
+        tag66: true
+        tag67: true
+        tag68: true
+        tag69: true
         tag7: true
+        tag70: true
+        tag71: true
+        tag72: true
+        tag73: true
+        tag74: true
+        tag75: true
+        tag76: true
+        tag77: true
+        tag78: true
+        tag79: true
         tag8: true
+        tag80: true
+        tag81: true
+        tag82: true
+        tag83: true
+        tag84: true
+        tag85: true
+        tag86: true
+        tag87: true
+        tag88: true
+        tag89: true
         tag9: true
+        tag90: true
+        tag91: true
+        tag92: true
+        tag93: true
+        tag94: true
+        tag95: true
+        tag96: true
+        tag97: true
+        tag98: true
+        tag99: true
         tile0: true
         tile0/strip1: true
         tile0/strip2: true
@@ -142,47 +302,204 @@ Visualization Manager:
         tile1/strip1: true
         tile10: true
         tile10/strip1: true
+        tile10/strip2: true
         tile11: true
+        tile11/spur_0: true
         tile11/strip1: true
-        tile11/strip2: true
         tile12: true
+        tile12/spur_0: true
         tile12/strip1: true
         tile13: true
+        tile13/spur_0: true
         tile13/strip1: true
         tile14: true
         tile14/strip1: true
-        tile14/strip2: true
         tile15: true
+        tile15/spur_0: true
         tile15/strip1: true
         tile16: true
+        tile16/spur_0: true
         tile16/strip1: true
         tile17: true
         tile17/strip1: true
+        tile17/strip2: true
         tile18: true
+        tile18/spur_0: true
         tile18/strip1: true
-        tile18/strip2: true
         tile19: true
         tile19/strip1: true
+        tile19/strip2: true
         tile2: true
         tile2/strip1: true
-        tile2/strip2: true
+        tile20: true
+        tile20/strip1: true
+        tile21: true
+        tile21/strip1: true
+        tile21/strip2: true
+        tile22: true
+        tile22/strip1: true
+        tile23: true
+        tile23/strip1: true
+        tile23/strip2: true
+        tile24: true
+        tile24/strip1: true
+        tile24/strip2: true
+        tile25: true
+        tile25/spur_0: true
+        tile25/strip1: true
+        tile26: true
+        tile26/strip1: true
+        tile27: true
+        tile27/strip1: true
+        tile28: true
+        tile28/strip1: true
+        tile28/strip2: true
+        tile29: true
+        tile29/strip1: true
         tile3: true
         tile3/strip1: true
+        tile30: true
+        tile30/strip1: true
+        tile30/strip2: true
+        tile31: true
+        tile31/spur_0: true
+        tile31/strip1: true
+        tile32: true
+        tile32/strip1: true
+        tile33: true
+        tile33/strip1: true
+        tile34: true
+        tile34/strip1: true
+        tile35: true
+        tile35/spur_0: true
+        tile35/strip1: true
+        tile36: true
+        tile36/spur_0: true
+        tile36/strip1: true
+        tile37: true
+        tile37/strip1: true
+        tile38: true
+        tile38/spur_0: true
+        tile38/strip1: true
+        tile39: true
+        tile39/spur_0: true
+        tile39/strip1: true
         tile4: true
         tile4/strip1: true
         tile4/strip2: true
+        tile40: true
+        tile40/strip1: true
+        tile40/strip2: true
+        tile41: true
+        tile41/strip1: true
+        tile42: true
+        tile42/strip1: true
+        tile42/strip2: true
+        tile43: true
+        tile43/spur_0: true
+        tile43/strip1: true
+        tile44: true
+        tile44/strip1: true
+        tile44/strip2: true
+        tile45: true
+        tile45/spur_0: true
+        tile45/strip1: true
+        tile46: true
+        tile46/strip1: true
+        tile46/strip2: true
+        tile47: true
+        tile47/strip1: true
+        tile48: true
+        tile48/strip1: true
+        tile48/strip2: true
+        tile49: true
+        tile49/spur_0: true
+        tile49/strip1: true
         tile5: true
+        tile5/spur_0: true
         tile5/strip1: true
+        tile50: true
+        tile50/strip1: true
+        tile50/strip2: true
+        tile51: true
+        tile51/spur_0: true
+        tile51/strip1: true
+        tile52: true
+        tile52/strip1: true
+        tile52/strip2: true
+        tile53: true
+        tile53/strip1: true
+        tile54: true
+        tile54/spur_0: true
+        tile54/strip1: true
+        tile55: true
+        tile55/spur_0: true
+        tile55/strip1: true
+        tile56: true
+        tile56/spur_0: true
+        tile56/strip1: true
+        tile57: true
+        tile57/strip1: true
+        tile58: true
+        tile58/spur_0: true
+        tile58/strip1: true
+        tile59: true
+        tile59/strip1: true
         tile6: true
         tile6/strip1: true
         tile6/strip2: true
+        tile60: true
+        tile60/spur_0: true
+        tile60/strip1: true
+        tile61: true
+        tile61/strip1: true
+        tile61/strip2: true
+        tile62: true
+        tile62/strip1: true
+        tile63: true
+        tile63/strip1: true
+        tile64: true
+        tile64/strip1: true
+        tile65: true
+        tile65/strip1: true
+        tile65/strip2: true
+        tile66: true
+        tile66/strip1: true
+        tile67: true
+        tile67/strip1: true
+        tile67/strip2: true
+        tile68: true
+        tile68/strip1: true
+        tile69: true
+        tile69/strip1: true
         tile7: true
         tile7/strip1: true
+        tile70: true
+        tile70/spur_0: true
+        tile70/strip1: true
+        tile71: true
+        tile71/strip1: true
+        tile71/strip2: true
+        tile72: true
+        tile72/strip1: true
+        tile73: true
+        tile73/strip1: true
+        tile73/strip2: true
+        tile74: true
+        tile74/strip1: true
+        tile75: true
+        tile75/strip1: true
+        tile75/strip2: true
+        tile76: true
+        tile76/strip1: true
+        tile77: true
+        tile77/strip1: true
+        tile77/strip2: true
         tile8: true
         tile8/strip1: true
+        tile8/strip2: true
         tile9: true
         tile9/strip1: true
-        tile9/strip2: true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -191,19 +508,25 @@ Visualization Manager:
         Value: /central/layout_array
       Value: true
     - Class: rviz_default_plugins/TF
-      Enabled: false
+      Enabled: true
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        map:
+          Value: true
+        world:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
-      Show Names: false
+      Show Names: true
       Tree:
-        {}
+        world:
+          map:
+            {}
       Update Interval: 0
-      Value: false
+      Value: true
     - Class: rviz_default_plugins/MarkerArray
       Enabled: true
       Name: MarkerArray
@@ -262,7 +585,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 3.6989238262176514
+      Distance: 8.727045059204102
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -277,20 +600,20 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Pitch: 1.0597968101501465
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.670397162437439
+      Yaw: 2.510406732559204
     Saved: ~
 Window Geometry:
   Apriltag:
     collapsed: false
   Displays:
     collapsed: false
-  Height: 1016
+  Height: 2032
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000016d0000035afc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d000001a6000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb00000012004100630074007500610074006f00720073010000043e000000c10000000000000000fb0000000e00530065006e0073006f0072007301000001e9000001ae0000012f00ffffff000000010000016d0000035afc0200000004fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d00000257000000a400fffffffb000000100041007000720069006c007400610067010000029a000000fd000000f500fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073a0000003efc0100000002fb0000000800540069006d006501000000000000073a000002fb00fffffffb0000000800540069006d00650100000000000004500000000000000000000004540000035a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000040000000000000276000006eefc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e000002ca0000018200fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb00000012004100630074007500610074006f00720073010000043e000000c10000000000000000fb0000000e00530065006e0073006f007200730100000344000004180000023600ffffff00000001000002c0000006eefc0200000004fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000006e000003a90000013200fffffffb000000100041007000720069006c007400610067010000042300000339000001be00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e1000001970000000300000f000000005afc0100000002fb0000000800540069006d0065010000000000000f000000058100fffffffb0000000800540069006d00650100000000000004500000000000000000000009b2000006ee00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Sensors:
@@ -301,6 +624,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1850
-  X: 70
-  Y: 27
+  Width: 3840
+  X: 0
+  Y: 54
