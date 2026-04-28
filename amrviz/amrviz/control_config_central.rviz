@@ -512,6 +512,36 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        Robot1base:
+          Value: true
+        Robot1base/com_frame:
+          Value: true
+        Robot1base/left_ir_frame:
+          Value: true
+        Robot1base/left_wheel_frame:
+          Value: true
+        Robot1base/rfid_frame:
+          Value: true
+        Robot1base/right_ir_frame:
+          Value: true
+        Robot1base/right_wheel_frame:
+          Value: true
+        Robot6base:
+          Value: true
+        Robot6base/base_link:
+          Value: true
+        Robot6base/com_frame:
+          Value: true
+        Robot6base/left_ir_frame:
+          Value: true
+        Robot6base/left_wheel_frame:
+          Value: true
+        Robot6base/rfid_frame:
+          Value: true
+        Robot6base/right_ir_frame:
+          Value: true
+        Robot6base/right_wheel_frame:
+          Value: true
         map:
           Value: true
         world:
@@ -523,6 +553,32 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
+          Robot1base:
+            Robot1base/com_frame:
+              {}
+            Robot1base/left_ir_frame:
+              {}
+            Robot1base/left_wheel_frame:
+              {}
+            Robot1base/rfid_frame:
+              {}
+            Robot1base/right_ir_frame:
+              {}
+            Robot1base/right_wheel_frame:
+              {}
+          Robot6base:
+            Robot6base/com_frame:
+              {}
+            Robot6base/left_ir_frame:
+              {}
+            Robot6base/left_wheel_frame:
+              {}
+            Robot6base/rfid_frame:
+              {}
+            Robot6base/right_ir_frame:
+              {}
+            Robot6base/right_wheel_frame:
+              {}
           map:
             {}
       Update Interval: 0
@@ -585,7 +641,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 8.727045059204102
+      Distance: 1.3705241680145264
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -600,10 +656,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0597968101501465
+      Pitch: 0.8897973299026489
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.510406732559204
+      Yaw: 1.9772313833236694
     Saved: ~
 Window Geometry:
   Apriltag:
